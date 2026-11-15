@@ -1,0 +1,1558 @@
+<title>דרך צלחה</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Rubik:wght@500;600;700&display=swap">
+<style>
+/* Layout: airy app shell — logo header + tab pills; planner = form card beside a scrolling "trip ticket" + section cards; one column on phones */
+:root{
+  --bg:#f3f7f6; --surface:#ffffff; --surface-2:#eef4f2; --ink:#14252b; --muted:#5a6d72; --line:#dce6e3;
+  --accent:#0d7a6f; --accent-ink:#ffffff; --accent-soft:#dff1ed; --accent-2:#0a5e56;
+  --sun:#b86e0a; --sun-soft:#fdf1dc; --warn:#b03a2e; --warn-soft:#fbe7e4;
+  --c1:#0d7a6f; --c2:#d08a1c; --c3:#4f6bd6; --c4:#a0518f; --c5:#5f8a2d;
+  --shadow:0 1px 2px rgba(20,37,43,.05),0 4px 16px rgba(20,37,43,.06);
+  --display:"Rubik","Heebo",system-ui,sans-serif;
+  --body:"Heebo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --r:18px; --r-s:12px;
+  --plane:#ffffff; --plane-2:#4f6bd6; --smoke:#ffffff; --smoke-edge:rgba(60,95,105,.55); --cloud:#ffffff; --car:#d9533f; --glass:#dff1f5; --ocean:#7cc3d9; --land:#5fae7c; --grid:rgba(255,255,255,.35); --sun-2:#f6b84a; --hill-1:#cfe8df; --hill-2:#a9d6c7; --tree:#5fa88f; --road:#e9e2d0; --road-line:#ffffff;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1719; --surface:#162226; --surface-2:#1c2b30; --ink:#e6efed; --muted:#9db0b2; --line:#29393d;
+  --accent:#43bfae; --accent-ink:#06211d; --accent-soft:#163a35; --accent-2:#6fd6c7;
+  --sun:#f0b35a; --sun-soft:#2f2614; --warn:#f08e81; --warn-soft:#3a1f1c;
+  --c1:#43bfae; --c2:#f0b35a; --c3:#8da0f2; --c4:#d996c8; --c5:#a3cb6c;
+  --plane:#dfe7ea; --plane-2:#8da0f2; --smoke:#e8eef0; --smoke-edge:rgba(255,255,255,.15); --cloud:#2c4146; --car:#e8705c; --glass:#9fc6cf; --ocean:#2a6f86; --land:#3f8a5c; --grid:rgba(255,255,255,.18); --sun-2:#e9a640; --hill-1:#1d3a35; --hill-2:#244a43; --tree:#2f6e5e; --road:#3a3a33; --road-line:#7d7a6c;
+  --car:#e8705c; --glass:#9fc6cf; --ocean:#2a6f86; --land:#3f8a5c; --grid:rgba(255,255,255,.18); --sun-2:#e9a640; --hill-1:#1d3a35; --hill-2:#244a43; --tree:#2f6e5e; --road:#3a3a33; --road-line:#7d7a6c;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1719; --surface:#162226; --surface-2:#1c2b30; --ink:#e6efed; --muted:#9db0b2; --line:#29393d;
+  --accent:#43bfae; --accent-ink:#06211d; --accent-soft:#163a35; --accent-2:#6fd6c7;
+  --sun:#f0b35a; --sun-soft:#2f2614; --warn:#f08e81; --warn-soft:#3a1f1c;
+  --c1:#43bfae; --c2:#f0b35a; --c3:#8da0f2; --c4:#d996c8; --c5:#a3cb6c;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:linear-gradient(180deg,var(--accent-soft) 0,var(--bg) 420px) no-repeat,var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;direction:rtl}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0;line-height:1.25}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ico{width:22px;height:22px;flex:none;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px 20px;flex-wrap:wrap;padding-block:10px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand svg{width:46px;height:46px;flex:none}
+.brand h1{font-size:23px;color:var(--ink);font-weight:700}
+.brand span{display:block;color:var(--muted);font-size:13px;margin-top:-2px}
+nav.tabs{display:flex;gap:4px;margin-inline-start:auto;background:var(--surface-2);border-radius:999px;padding:4px}
+nav.tabs a{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--muted);padding:8px 16px;border-radius:999px;font-weight:500;font-size:15px;min-height:40px}
+nav.tabs a .ico{width:18px;height:18px}
+nav.tabs a[aria-current="page"]{background:var(--surface);color:var(--accent);box-shadow:var(--shadow)}
+@media (max-width:640px){nav.tabs{width:100%;margin:0}nav.tabs a{flex:1;justify-content:center;padding:8px 4px;font-size:13.5px}nav.tabs a .ico{display:none}}
+
+main{padding-block:24px 64px}
+.view[hidden]{display:none}
+.grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:24px;align-items:start}
+@media (min-width:861px){.grid>aside{position:sticky;top:90px;max-height:calc(100vh - 110px);overflow:auto}}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.panel h2{font-size:21px;margin-bottom:14px}
+form.plan{display:flex;flex-direction:column;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--ink);font-weight:500;min-width:0}
+input[type=text],input[type=date],input[type=number],select,textarea{background:var(--bg);border:1.5px solid var(--line);border-radius:var(--r-s);padding:10px 12px;width:100%;min-width:0;color:var(--ink);min-height:46px;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+textarea{resize:vertical;min-height:70px}
+.seg{display:flex;border-radius:999px;padding:4px;background:var(--surface-2)}
+.seg label{flex:1;text-align:center;padding:9px 8px;border-radius:999px;cursor:pointer;font-weight:600;color:var(--muted);position:relative}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--surface);color:var(--accent);box-shadow:var(--shadow)}
+.seg label:has(input:focus-visible){outline:3px solid var(--accent)}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line);border-radius:999px;padding:7px 13px;font-size:14px;cursor:pointer;background:var(--surface);min-height:40px;font-weight:500;transition:all .15s}
+.chip:has(input:checked){border-color:var(--accent);background:var(--accent-soft);color:var(--accent-2)}
+.chip input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:var(--r-s);padding:12px 18px;font-weight:700;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;font-size:16px;transition:transform .1s,background .15s}
+.btn:hover{background:var(--accent-2)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.ghost{background:var(--surface);color:var(--accent);border:1.5px solid var(--accent)}
+.btn.ghost:hover{background:var(--accent-soft)}
+.btn.small{padding:8px 14px;font-size:14px;min-height:40px}
+.btn.danger{background:var(--surface);color:var(--warn);border:1.5px solid var(--warn)}
+.note{font-size:13.5px;color:var(--muted)}
+.status{font-size:14.5px;color:var(--accent);min-height:1.4em;font-weight:500}
+.status.err{color:var(--warn)}
+
+/* Ticket */
+.ticket{display:grid;grid-template-columns:minmax(0,1fr) auto;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--accent-ink);border-radius:var(--r);overflow:hidden;position:relative;box-shadow:var(--shadow)}
+.ticket .main{padding:22px 24px;min-width:0}
+.ticket .stub{padding:18px 22px;border-inline-start:2px dashed color-mix(in srgb,var(--accent-ink) 40%,transparent);display:flex;flex-direction:column;justify-content:center;gap:6px;text-align:center;min-width:120px}
+.ticket .eyebrow{font-size:12.5px;letter-spacing:.05em;opacity:.85}
+.ticket h2{font-size:28px;margin:4px 0 8px;font-weight:700}
+.ticket .route{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:15px}
+.ticket .stub b{font-family:var(--display);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.example-tag{display:inline-block;background:var(--sun-soft);color:var(--sun);border-radius:8px;padding:3px 10px;font-size:13px;font-weight:700;margin-bottom:8px}
+@media (max-width:520px){.ticket{grid-template-columns:1fr}.ticket .stub{border-inline-start:0;border-top:2px dashed color-mix(in srgb,var(--accent-ink) 40%,transparent);flex-direction:row;justify-content:space-around}.ticket h2{font-size:23px}}
+
+.result{display:flex;flex-direction:column;gap:22px;min-width:0}
+.summary{font-size:17px;max-width:70ch;margin:0}
+.sec h3{font-size:19px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sec h3 .hi{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--accent-soft);color:var(--accent)}
+.sec h3 .hi .ico{width:20px;height:20px}
+.sec h3 small{font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted);flex-basis:100%;margin-top:-4px;padding-inline-start:46px}
+
+.budget-bar{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--surface-2);gap:2px}
+.budget-bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:14px}
+.legend span{display:inline-flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.legend i{width:11px;height:11px;border-radius:4px;display:inline-block}
+.budget-total{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.budget-total h3{margin:0}
+.budget-total b{font-family:var(--display);font-weight:700;font-size:28px;font-variant-numeric:tabular-nums}
+.over,.under{display:inline-block;font-weight:700;font-size:13px;border-radius:8px;padding:2px 9px;margin-inline-start:6px;vertical-align:middle}
+.over{color:var(--warn);background:var(--warn-soft)}
+.under{color:var(--accent);background:var(--accent-soft)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:7px;min-width:0;box-shadow:var(--shadow)}
+.card .kind{font-size:13px;color:var(--muted)}
+.card h4{margin:0;font-size:17px;font-family:var(--display);font-weight:600}
+.card p{margin:0;font-size:15px}
+.card .price{font-weight:700;font-variant-numeric:tabular-nums}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:12.5px;border-radius:7px;padding:2px 8px;background:var(--surface-2);color:var(--muted)}
+.tag.ok{background:var(--accent-soft);color:var(--accent-2)}
+.links{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:8px}
+.links a{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;font-weight:500;text-decoration:none;border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--ink);background:var(--surface);min-height:36px}
+.links a::after{content:"↗";font-size:12px;color:var(--muted)}
+.links a:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.links a.main{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.links a.main::after{color:inherit}
+.links-label{font-size:13px;color:var(--muted);margin-top:10px}
+
+.days{display:flex;flex-direction:column;gap:14px}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.day-head{display:flex;justify-content:space-between;gap:6px 10px;flex-wrap:wrap;align-items:baseline;padding:14px 18px;background:var(--surface-2)}
+.day-head h4{margin:0;font-family:var(--display);font-weight:600;font-size:18px}
+.day-head .d{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.day.shabbat{border-color:var(--sun)}
+.day.shabbat .day-head{background:var(--sun-soft)}
+.shabbat-times{display:flex;gap:6px 16px;flex-wrap:wrap;padding:10px 18px;font-size:14.5px;color:var(--sun);font-weight:500;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--sun-soft) 50%,transparent)}
+.shabbat-times b{font-variant-numeric:tabular-nums}
+ol.items{list-style:none;margin:0;padding:4px 0}
+ol.items li{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;padding:11px 18px;align-items:start}
+ol.items li+li{border-top:1px solid var(--line)}
+.time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px;padding-top:2px;font-weight:500}
+.it-name{font-weight:700}
+.it-desc{font-size:14.5px;color:var(--muted)}
+.it-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:13px;white-space:nowrap}
+@media (max-width:520px){ol.items li{grid-template-columns:46px minmax(0,1fr);}.it-meta{grid-column:2;align-items:flex-start;flex-direction:row;gap:12px}}
+.k{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:7px;vertical-align:middle}
+.k-attraction{background:var(--c1)}.k-food{background:var(--c2)}.k-travel{background:var(--c3)}.k-prayer{background:var(--c4)}.k-rest,.k-shopping{background:var(--c5)}
+
+ul.plain{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:700px){.two{grid-template-columns:1fr}}
+
+.refine{display:flex;gap:8px;flex-wrap:wrap}
+.refine input{flex:1;min-width:200px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+.empty{border:2px dashed var(--line);border-radius:var(--r);padding:32px;text-align:center;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:12px}
+.trip-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;box-shadow:var(--shadow)}
+.trip-row h4{margin:0;font-size:17px;font-family:var(--display);font-weight:600}
+
+.tip{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow)}
+.tip .top-line{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.stars{color:var(--sun);letter-spacing:1px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filters input{flex:1;min-width:180px}
+.filters select{width:auto}
+
+.loading{display:flex;align-items:center;gap:14px;padding:26px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);flex-wrap:wrap}
+.spin{width:26px;height:26px;border-radius:50%;border:3px solid var(--accent-soft);border-top-color:var(--accent);animation:sp 1s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}*{transition:none!important}}
+.wx{display:flex;gap:28px;flex-wrap:wrap}
+.wx>div{display:flex;flex-direction:column;gap:2px}
+.wx b{font-family:var(--display);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums}
+.eyebrow-s{font-size:13px;color:var(--muted)}
+.pack{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px 22px}
+.pack h5{margin:0 0 6px;font-size:15px;color:var(--accent)}
+.pk{display:flex;gap:9px;align-items:flex-start;font-size:15px;padding:5px 0;cursor:pointer}
+.pk input{accent-color:var(--accent);margin-top:5px;flex:none;width:17px;height:17px}
+.pk:has(input:checked){color:var(--muted);text-decoration:line-through}
+.lvl{display:inline-block;font-size:12.5px;font-weight:700;border-radius:7px;padding:2px 10px}
+.lvl-cheap{background:var(--accent-soft);color:var(--accent-2)}
+.lvl-mid{background:var(--sun-soft);color:var(--sun)}
+.lvl-pricey{background:var(--warn-soft);color:var(--warn)}
+.disclaimer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin:0}
+[hidden]{display:none!important}
+.card{position:relative}
+.pick{align-self:flex-start;border:1.5px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600;cursor:pointer;min-height:32px;order:-1}
+.pick[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.card.picked{outline:2.5px solid var(--accent);outline-offset:-2px;background:var(--accent-soft)!important}
+.pick-hint{margin:0;font-size:14px;color:var(--accent-2);background:var(--accent-soft);border-radius:var(--r-s);padding:10px 14px}
+#sumView{position:fixed;inset:0;z-index:30;background:var(--surface-2);overflow:auto;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}
+.sum-bar{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 10px) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+.sum-bar .btn{text-decoration:none}
+.sum-paper{max-width:880px;margin:18px auto;background:#fff;color:#111;border-radius:var(--r);box-shadow:var(--shadow);padding:8px 4px}
+@media (max-width:600px){.sum-paper{margin:0;border-radius:0}}
+.cmp-head{display:flex;flex-wrap:wrap;gap:8px}.cmp-head span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:500}
+.legs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.legs li{display:flex;gap:12px;background:var(--surface-2);border-radius:var(--r-s);padding:12px 14px}
+.leg-mode{flex:none;width:38px;height:38px;border-radius:50%;background:var(--surface);display:grid;place-items:center;color:var(--c3)}
+.leg-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.leg-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.leg-price{font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent-2)}
+.leg-alt{font-size:14px;color:var(--sun);font-weight:500}
+.stay-dates{font-size:13.5px;font-weight:600;color:var(--accent-2)}
+.start{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px;box-shadow:var(--shadow)}
+.start h3{font-size:24px;color:var(--accent-2)}
+.start p{margin:8px 0 18px;color:var(--muted);font-size:16px}
+.start-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.start-list li{background:var(--surface-2);border-radius:var(--r-s);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.start-list b{font-family:var(--display);font-weight:600;font-size:16px}
+.start-list span{font-size:14px;color:var(--muted)}
+/* every topic in its own box + side menu */
+.plan-layout{display:grid;grid-template-columns:180px minmax(0,1fr);gap:18px;align-items:start}
+.plan-body{display:flex;flex-direction:column;gap:22px;min-width:0}
+.toc{position:sticky;top:calc(var(--hdr,76px) + env(safe-area-inset-top,0px) + 14px);display:flex;flex-direction:column;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px;box-shadow:var(--shadow);max-height:calc(100vh - var(--hdr,76px) - 40px);overflow:auto}
+.toc-title{font-size:12.5px;color:var(--muted);padding:2px 10px 6px;font-weight:500}
+.toc button{display:flex;align-items:center;gap:8px;border:0;background:none;text-align:start;padding:8px 10px;border-radius:10px;cursor:pointer;color:var(--ink);font-size:14.5px;min-height:38px;white-space:nowrap}
+.toc button .ico{width:18px;height:18px;color:var(--muted)}
+.toc button:hover{background:var(--surface-2)}
+.toc button.on{background:var(--accent-soft);color:var(--accent-2);font-weight:600}
+.toc button.on .ico{color:var(--accent)}
+@media (max-width:1180px){
+  .plan-layout{grid-template-columns:minmax(0,1fr)}
+  .toc{flex-direction:row;overflow-x:auto;max-height:none;padding:6px;gap:4px;z-index:4;scrollbar-width:none}
+  .toc::-webkit-scrollbar{display:none}
+  .toc-title{display:none}
+  .toc button{flex:none;padding:7px 12px;border-radius:999px;font-size:14px}
+}
+.sec,.panel.sec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);scroll-margin-top:calc(var(--hdr,76px) + 80px)}
+.ticket{scroll-margin-top:calc(var(--hdr,76px) + 80px)}
+.sec .card,.sec .day,.sec .panel{box-shadow:none;background:var(--surface-2);border-color:transparent}
+.sec .card:hover{transform:none;box-shadow:none}
+.sec .day{background:var(--surface);border:1px solid var(--line)}
+.sec .day.shabbat{border-color:var(--sun)}
+.sec .links a{background:var(--surface)}
+.sec .links a.main{background:var(--accent)}
+.two{align-items:start}
+@media (max-width:520px){.sec,.panel.sec{padding:16px}}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);align-items:end;gap:12px 24px;margin-bottom:20px}
+.hero h2{font-size:clamp(28px,5vw,40px);font-weight:700;color:var(--accent-2);line-height:1.15}
+.hero p{margin:10px 0 0;font-size:17px;color:var(--muted);max-width:52ch}
+.hero-art{width:100%;height:auto;display:block}
+@media (max-width:760px){.hero{grid-template-columns:1fr}.hero-art{max-width:380px;justify-self:center;margin-top:-4px}}
+.step{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:17px;margin-top:6px}
+.step:first-child{margin-top:0}
+.step .num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:14px;font-weight:700}
+.btn-go{font-size:18px;min-height:54px;box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%,transparent)}
+.card{transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(20,37,43,.06),0 10px 28px rgba(20,37,43,.10)}
+ol.items li{position:relative}
+ol.items li+li{border-top:0}
+ol.items li::before{content:"";position:absolute;top:0;bottom:0;inset-inline-start:calc(18px + 56px + 12px + 5px);width:2px;background:var(--line)}
+ol.items li:first-child::before{top:18px}ol.items li:last-child::before{bottom:calc(100% - 22px)}
+ol.items .it-name,ol.items .it-desc{padding-inline-start:22px}
+ol.items .it-name{position:relative}
+ol.items .k{position:absolute;inset-inline-start:0;top:.45em;margin:0}
+.k{position:relative;z-index:1;width:12px;height:12px;box-shadow:0 0 0 3px var(--surface)}
+@media (max-width:520px){ol.items li::before{inset-inline-start:calc(18px + 46px + 12px + 5px)}}
+.sec h3 .hi.h-food{background:var(--sun-soft);color:var(--sun)}
+.sec h3 .hi.h-shul{background:color-mix(in srgb,var(--c4) 16%,transparent);color:var(--c4)}
+.sec h3 .hi.h-car,.sec h3 .hi.h-route{background:color-mix(in srgb,var(--c3) 16%,transparent);color:var(--c3)}
+.sec h3 .hi.h-shop,.sec h3 .hi.h-money{background:color-mix(in srgb,var(--c5) 18%,transparent);color:var(--c5)}
+.loader{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:28px 20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.loader-art{width:min(300px,100%);height:auto}
+.globe{width:min(260px,100%);height:auto;overflow:visible}
+.lands{animation:spinEarth 10s linear infinite}
+@keyframes spinEarth{from{transform:translateX(0)}to{transform:translateX(-200px)}}
+.orbit{fill:none;stroke:var(--muted);stroke-width:.8;stroke-dasharray:3 4;opacity:.6}
+.oplane{offset-path:path("M88 0 A88 30 0 1 1 -88 0 A88 30 0 1 1 88 0");offset-rotate:auto;animation:orbit 5s linear infinite}
+@keyframes orbit{0%{offset-distance:0%}100%{offset-distance:100%}}
+.pct{font-family:var(--display);font-weight:700;font-size:20px;color:var(--accent-2)}
+.prep{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.prep .when{display:inline-block;font-weight:700;color:var(--accent-2);margin-inline-end:4px}
+.practical{margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.practical div{background:var(--surface-2);border-radius:var(--r-s);padding:12px 14px}
+.practical dt{font-weight:700;margin-bottom:2px}
+.practical dd{margin:0;font-size:14.5px}
+.car{offset-path:path("M10 108 C60 96 90 80 130 82 S200 74 240 56");offset-rotate:auto;animation:drive 4.5s ease-in-out infinite}
+@keyframes drive{0%{offset-distance:0%}100%{offset-distance:100%}}
+.loader-title{font-family:var(--display);font-size:22px}
+.loader-line{font-size:16px;color:var(--accent-2);min-height:1.6em}
+.loader-line.in{animation:fadein .5s ease}
+@keyframes fadein{from{opacity:.2;transform:translateY(4px)}to{opacity:1;transform:none}}
+.progress{width:min(420px,100%);height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.progress i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--sun-2));transition:width 1s linear}
+.loader-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;font-variant-numeric:tabular-nums;color:var(--muted)}
+.plane{animation:fly 12s linear infinite}
+@keyframes fly{0%{transform:translate(450px,34px)}60%{transform:translate(-40px,34px)}100%{transform:translate(-40px,34px)}}
+.flip{transform:scaleX(-1)}
+.sway{animation:sway 1.6s ease-in-out infinite alternate}
+@keyframes sway{to{transform:translateY(-1.5px) rotate(-2deg)}}
+.skytext{font-family:var(--display);font-weight:700;font-size:34px;fill:var(--smoke);stroke:var(--smoke-edge);stroke-width:.6;animation:skyfade 12s linear infinite}
+@keyframes skyfade{0%,84%{opacity:.95}96%,100%{opacity:0}}
+.wclip{transform-box:fill-box;transform-origin:right center;animation:write 12s linear infinite}
+@keyframes write{0%,18%{transform:scaleX(0)}39%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+.spuff{fill:var(--smoke);transform-box:fill-box;transform-origin:center;animation:spuff .6s ease-out infinite}
+.s2{animation-delay:.3s}
+@keyframes spuff{0%{opacity:.9;transform:translate(0,0) scale(.7)}100%{opacity:0;transform:translate(-10px,0) scale(1.8)}}
+.cloud{fill:var(--cloud);opacity:.85}
+.c1{animation:drift 30s linear infinite}.c2{animation:drift2 42s linear infinite;animation-delay:-18s}
+@keyframes drift{0%{transform:translate(-30px,74px)}100%{transform:translate(450px,74px)}}
+.c2{transform:translate(200px,58px)}
+@keyframes drift2{0%{transform:translate(-30px,84px)}100%{transform:translate(450px,84px)}}
+.hcar{offset-path:path("M60 170 C120 150 150 140 200 136 S300 126 340 118");offset-rotate:auto;offset-anchor:0 0;animation:hdrive 9s linear infinite}
+@keyframes hdrive{0%{offset-distance:0%;opacity:0}6%{opacity:1}88%{opacity:1}100%{offset-distance:100%;opacity:0}}
+.bounce{animation:bump .35s ease-in-out infinite alternate}
+@keyframes bump{to{transform:translateY(-1px)}}
+.wheel>*{transform-box:fill-box;transform-origin:center}
+.wheel path{animation:spin .4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.puff{fill:var(--muted);opacity:0;animation:puff 1.2s ease-out infinite}
+.p2{animation-delay:.4s}.p3{animation-delay:.8s}
+@keyframes puff{0%{opacity:.45;transform:translate(0,0) scale(.6)}100%{opacity:0;transform:translate(-16px,-8px) scale(1.8)}}
+.puff{transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion:reduce){.car{animation:none;offset-distance:50%}.hcar{animation:none;offset-distance:45%}.bounce,.wheel path,.puff,.sway,.spuff,.skytext,.wclip{animation:none}.plane{animation:none;transform:translate(60px,34px)}.c1,.c2{animation:none}.lands,.oplane{animation:none}.oplane{offset-distance:30%}}
+.toolbar .btn{text-decoration:none}
+.nav-l{display:flex;gap:10px}
+.day-foot{padding:4px 18px 14px}
+.meter{height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.meter i{display:block;height:100%;border-radius:999px}
+.exp-cats{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:12px;font-size:14px}
+.exp-cats div{display:flex;flex-direction:column}
+.exp-cats span{color:var(--muted);font-size:13px}
+.exp-cats b{font-variant-numeric:tabular-nums}
+.exp-cats small{color:var(--muted);font-weight:400}
+.exp-form{display:grid;grid-template-columns:minmax(0,1fr) 100px 120px auto;gap:8px;margin-top:14px}
+@media (max-width:560px){.exp-form{grid-template-columns:1fr 1fr}.exp-form input#expDesc{grid-column:1/-1}}
+.exp-list{list-style:none;margin:12px 0 0;padding:0}
+.exp-list li{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.exp-list li span{flex:1;min-width:0}
+.exp-list small{color:var(--muted)}
+.exp-list b{font-variant-numeric:tabular-nums}
+.x{border:0;background:none;color:var(--muted);cursor:pointer;width:36px;height:36px;border-radius:8px}
+.x:hover{background:var(--warn-soft);color:var(--warn)}
+.tip-img{width:100%;max-height:280px;object-fit:cover;border-radius:var(--r-s);margin:4px 0}
+.tbl-wrap{overflow-x:auto}
+table.cmp{width:100%;border-collapse:collapse;min-width:520px;font-size:14.5px}
+table.cmp th,table.cmp td{padding:12px 14px;text-align:start;vertical-align:top;border-bottom:1px solid var(--line)}
+table.cmp thead th{font-family:var(--display);font-size:17px;background:var(--surface-2)}
+table.cmp tbody th{color:var(--muted);font-weight:500;white-space:nowrap;width:110px}
+.dots{color:var(--accent);letter-spacing:2px}
+.dots span{color:var(--line)}
+#drive{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 16px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px))}
+.drive-in{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.drive-top{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.drive-title{text-align:center;display:flex;flex-direction:column}
+.drive-title b{font-family:var(--display);font-size:24px}
+.drive-title span{color:var(--muted)}
+.drive-shabbat{background:var(--sun-soft);color:var(--sun);border-radius:var(--r-s);padding:12px 16px;font-size:20px;text-align:center}
+.drive-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.drive-list li{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.dt{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent);min-width:64px}
+.dn{flex:1;min-width:0;display:flex;flex-direction:column}
+.dn b{font-size:20px}
+.dn span{color:var(--muted);font-size:15px}
+.drive-list .btn{min-width:84px;font-size:18px;text-decoration:none}
+.skip{position:absolute;inset-inline-start:-9999px}
+.skip:focus{inset-inline-start:16px;top:16px;z-index:20;background:var(--surface);padding:8px 14px;border-radius:8px}
+</style>
+
+<a class="skip" href="#main">דילוג לתוכן</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#plan"><svg viewBox="0 0 48 48" role="img" aria-label="לוגו דרך צלחה"><rect width="48" height="48" rx="14" fill="var(--accent)"/><circle cx="33" cy="15" r="6" fill="#f6b84a"/><path d="M8 40c7-1 12-4 12-9s-6-6-6-10 6-6 12-6" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M8 40c7-1 12-4 12-9s-6-6-6-10 6-6 12-6" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="2.5 3" fill="none" stroke-linecap="round"/><path d="M36 30.5c0 4-5 9-5 9s-5-5-5-9a5 5 0 0 1 10 0z" fill="#fff"/><circle cx="31" cy="30.5" r="1.9" fill="var(--accent)"/></svg><div><h1>דרך צלחה</h1><span>מתכננים טיול משפחתי בקלות</span></div></a>
+    <nav class="tabs" aria-label="ניווט">
+      <a href="#plan" data-tab="plan"><svg class="ico" viewBox="0 0 24 24"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg>תכנון</a>
+      <a href="#compare" data-tab="compare"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3v18M5 7h4M15 7h4M3 14l3-7 3 7a3 3 0 0 1-6 0zM15 14l3-7 3 7a3 3 0 0 1-6 0z"/></svg>השוואה</a>
+      <a href="#trips" data-tab="trips"><svg class="ico" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>הטיולים שלי</a>
+      <a href="#tips" data-tab="tips"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .6-4.5 4 1.3 6-5.4-3.2L6.6 19l1.3-6-4.5-4 6-.6z"/></svg>המלצות</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <!-- PLAN -->
+  <section class="view" id="view-plan">
+    <div class="hero">
+      <div class="hero-text">
+        <h2>לאן נוסעים הפעם?</h2>
+        <p>ממלאים כמה פרטים ומקבלים טיול משפחתי שלם: לינה במחיר טוב, מסלול לכל יום, אוכל כשר, בתי כנסת וזמני שבת.</p>
+      </div>
+      <svg class="hero-art" viewBox="0 0 420 170" aria-hidden="true">
+        <circle cx="330" cy="52" r="26" fill="var(--sun-2)"/>
+        <defs>
+          <filter id="smoke" x="-10%" y="-40%" width="120%" height="180%"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3.2"/><feGaussianBlur stdDeviation="0.7"/></filter>
+          <clipPath id="writeClip"><rect class="wclip" x="72" y="6" width="228" height="52"/></clipPath>
+        </defs>
+        <g clip-path="url(#writeClip)"><text class="skytext" x="290" y="44" direction="rtl" text-anchor="start" filter="url(#smoke)">דרך צלחה</text></g>
+        <g class="plane"><g class="flip"><g class="sway">
+          <circle class="spuff s1" cx="-16" cy="0" r="2.4"/><circle class="spuff s2" cx="-16" cy="0" r="2"/>
+          <path d="M-14 0 L10 -2.4 C15 -2.4 18 -1.2 18 0 C18 1.2 15 2.4 10 2.4 Z" fill="var(--plane)" stroke="var(--plane-2)" stroke-width=".8"/>
+          <path d="M2 -1 L-6 -12 L-2 -12 L8 -1Z M2 1 L-6 10 L-2 10 L8 1Z" fill="var(--plane-2)"/>
+          <path d="M-12 -1 L-16 -7 L-13 -7 L-8 -1Z" fill="var(--plane-2)"/>
+          <circle cx="12" cy="0" r=".9" fill="var(--glass)"/><circle cx="8" cy="0" r=".9" fill="var(--glass)"/><circle cx="4" cy="0" r=".9" fill="var(--glass)"/></g></g></g>
+        <g class="cloud c1"><ellipse cx="0" cy="0" rx="16" ry="6"/><ellipse cx="8" cy="-4" rx="9" ry="6"/><ellipse cx="-6" cy="-3" rx="7" ry="5"/></g>
+        <g class="cloud c2"><ellipse cx="0" cy="0" rx="12" ry="4.5"/><ellipse cx="5" cy="-3" rx="7" ry="5"/></g>
+        <path d="M0 120 C70 70 130 80 190 104 S320 78 420 96 V170 H0Z" fill="var(--hill-1)"/>
+        <path d="M0 140 C90 110 170 126 250 132 S370 112 420 124 V170 H0Z" fill="var(--hill-2)"/>
+        <path d="M60 170 C120 150 150 140 200 136 S300 126 340 118" fill="none" stroke="var(--road)" stroke-width="10" stroke-linecap="round"/>
+        <path d="M60 170 C120 150 150 140 200 136 S300 126 340 118" fill="none" stroke="var(--road-line)" stroke-width="2" stroke-dasharray="8 9" stroke-linecap="round"/>
+        <g class="hcar"><g class="bounce"><circle class="puff p1" cx="-20" cy="-2" r="3"/><circle class="puff p2" cx="-20" cy="-2" r="2.5"/><circle class="puff p3" cx="-20" cy="-2" r="2"/>
+          <path d="M-17 -3 h34 a3 3 0 0 0 3 -3 v-3 a4 4 0 0 0 -4 -4 h-6 l-6 -7 h-14 l-6 7 h-1 a4 4 0 0 0 -4 4 v6 a3 3 0 0 0 3 3z" fill="var(--car)"/>
+          <path d="M-9 -13 l4 -5 h5 v5z M3 -13 v-5 h5 l4 5z" fill="var(--glass)"/><rect x="16" y="-10" width="4" height="3" rx="1" fill="var(--sun-2)"/>
+          <rect x="-14" y="-26" width="22" height="5" rx="2" fill="var(--sun)"/></g>
+          <g class="wheel" transform="translate(-9 -2)"><circle r="5" fill="#1f2a2e"/><circle r="2" fill="#c9d3d0"/><path d="M0 -5v10M-5 0h10" stroke="#c9d3d0" stroke-width="1"/></g>
+          <g class="wheel" transform="translate(10 -2)"><circle r="5" fill="#1f2a2e"/><circle r="2" fill="#c9d3d0"/><path d="M0 -5v10M-5 0h10" stroke="#c9d3d0" stroke-width="1"/></g></g>
+        <g transform="translate(330 76)"><path d="M0 0c0 12-14 26-14 26S-28 12-28 0a14 14 0 0 1 28 0z" transform="translate(14 0)" fill="var(--accent)"/><circle cx="0" cy="0" r="5" fill="#fff"/></g>
+        <g fill="var(--tree)"><circle cx="96" cy="96" r="11"/><rect x="94" y="104" width="4" height="12"/><circle cx="118" cy="102" r="8"/><rect x="116" y="108" width="3" height="9"/><circle cx="262" cy="98" r="10"/><rect x="260" y="106" width="4" height="11"/></g>
+      </svg>
+    </div>
+    <div class="grid">
+      <aside class="panel">
+        <form class="plan" id="planForm" autocomplete="off">
+          <div class="step"><span class="num">1</span>היעד והתאריכים</div>
+          <div class="seg" role="radiogroup" aria-label="סוג טיול">
+            <label><input type="radio" name="scope" id="scopeIL" value="il" checked>בארץ</label>
+            <label><input type="radio" name="scope" id="scopeAbroad" value="abroad">בחו"ל</label>
+          </div>
+          <label class="f">יעד
+            <input type="text" id="dest" placeholder="למשל: צפת והגליל, רומא, אנטוורפן" required>
+          </label>
+          <label class="f" id="fromWrap">יוצאים מ־
+            <input type="text" id="origin" placeholder="למשל: בית שמש">
+          </label>
+          <div class="row">
+            <label class="f">מתאריך<input type="date" id="dFrom" required></label>
+            <label class="f">עד תאריך<input type="date" id="dTo" required></label>
+          </div>
+          <div class="row">
+            <label class="f"><span id="outTimeLbl">שעת יציאה</span><input type="time" id="outTime"></label>
+            <label class="f"><span id="backTimeLbl">שעת חזרה</span><input type="time" id="backTime"></label>
+          </div>
+          <p class="note" id="timeNote" style="margin:-6px 0 0">לא חובה. אם יודעים, התוכנית תסתדר לפי השעות.</p>
+          <div class="step"><span class="num">2</span>מי נוסע</div>
+          <div class="row">
+            <label class="f">מבוגרים<input type="number" id="adults" min="1" max="12" value="2"></label>
+            <label class="f">ילדים<input type="number" id="kids" min="0" max="15" value="0"></label>
+          </div>
+          <label class="f">גילאי הילדים (מופרדים בפסיק)
+            <input type="text" id="kidAges" placeholder="למשל: 3, 7, 11">
+          </label>
+          <div class="step"><span class="num">3</span>תקציב ודגשים</div>
+          <div class="row">
+            <label class="f">תקציב כולל (₪)<input type="number" id="budget" min="0" step="100" placeholder="למשל: 6000"></label>
+            <label class="f">רמת לינה
+              <select id="level">
+                <option value="חסכוני מאוד">חסכוני מאוד</option>
+                <option value="חסכוני" selected>חסכוני</option>
+                <option value="בינוני">בינוני</option>
+                <option value="נוח">נוח</option>
+              </select>
+            </label>
+          </div>
+          <div class="f" style="display:flex;flex-direction:column;gap:6px">
+            <div class="checks">
+              <label class="chip"><input type="checkbox" id="pKosher" checked>אוכל כשר בלבד</label>
+              <label class="chip"><input type="checkbox" id="pShul" checked>בית כנסת קרוב</label>
+              <label class="chip"><input type="checkbox" id="pShabbat" checked>זמני שבת</label>
+              <label class="chip"><input type="checkbox" id="pFamily" checked>מתאים לילדים</label>
+              <label class="chip"><input type="checkbox" id="pSave" checked>חיסכון מקסימלי</label>
+              <label class="chip"><input type="checkbox" id="pCar">יש רכב</label>
+              <label class="chip"><input type="checkbox" id="pRent">צריך רכב שכור</label>
+              <label class="chip"><input type="checkbox" id="pApt">מעדיפים דירה</label>
+              <label class="chip"><input type="checkbox" id="pShop">רוצים לעשות קניות</label>
+              <label class="chip"><input type="checkbox" id="pMulti">לינה בכמה מקומות</label>
+              <label class="chip"><input type="checkbox" id="pTzadik">שילוב קברי צדיקים</label>
+              <label class="chip" id="multiCountryChip" hidden><input type="checkbox" id="pCountries">טיול בכמה מדינות קרובות</label>
+            </div>
+          </div>
+          <label class="f" id="shopWrap" hidden>מה רוצים לקנות?
+            <input type="text" id="shopWhat" placeholder="למשל: בגדים לילדים, נעליים, מוצרי חשמל, מתנות">
+          </label>
+          <label class="f" id="rentWrap" hidden>השכרת רכב
+            <select id="rentMode">
+              <option value="all">לכל הטיול – איסוף והחזרה בשדה התעופה</option>
+              <option value="part">רק לחלק מהימים – לפי מה שמשתלם</option>
+            </select>
+          </label>
+          <label class="f">עוד משהו שחשוב לכם
+            <textarea id="extra" placeholder="למשל: קברי צדיקים, מסלולי מים, בלי הרבה נסיעות"></textarea>
+          </label>
+          <button class="btn btn-go" type="submit" id="goBtn">תכננו לי טיול <span aria-hidden="true">←</span></button>
+          <div class="status" id="planStatus" role="status"></div>
+          <p class="note">התכנון נעשה בעזרת Claude בחשבון שלכם. בפעם הראשונה תתבקשו לאשר.</p>
+        </form>
+      </aside>
+
+      <div class="result" id="result"></div>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section class="view" id="view-compare" hidden>
+    <div class="grid">
+      <aside class="panel">
+        <h2>השוואת יעדים</h2>
+        <p class="note" style="margin:-6px 0 12px">לא בטוחים לאן לנסוע? כתבו 2–3 יעדים ונשווה ביניהם למשפחה שלכם.</p>
+        <form class="plan" id="cmpForm" autocomplete="off">
+          <div class="step"><span class="num">1</span>אילו יעדים להשוות</div>
+          <label class="f">יעד ראשון<input type="text" id="cmp1" required placeholder="למשל: צפת"></label>
+          <label class="f">יעד שני<input type="text" id="cmp2" required placeholder="למשל: ירושלים"></label>
+          <label class="f">יעד שלישי (לא חובה)<input type="text" id="cmp3" placeholder="למשל: אנטוורפן"></label>
+          <div class="step"><span class="num">2</span>מתי ומי נוסע</div>
+          <div class="row">
+            <label class="f">מתאריך<input type="date" id="cFrom" required></label>
+            <label class="f">עד תאריך<input type="date" id="cTo" required></label>
+          </div>
+          <div class="row">
+            <label class="f">מבוגרים<input type="number" id="cAdults" min="1" max="12" value="2"></label>
+            <label class="f">ילדים<input type="number" id="cKids" min="0" max="15" value="0"></label>
+          </div>
+          <label class="f">גילאי הילדים<input type="text" id="cKidAges" placeholder="למשל: 3, 7, 11"></label>
+          <div class="row">
+            <label class="f">יוצאים מ־<input type="text" id="cOrigin" placeholder="למשל: בית שמש"></label>
+            <label class="f">תקציב (₪)<input type="number" id="cBudget" min="0" step="100" placeholder="לא חובה"></label>
+          </div>
+          <button class="btn" type="submit" id="cmpBtn">השוו לי</button>
+          <div class="status" id="cmpStatus" role="status"></div>
+        </form>
+      </aside>
+      <div class="result" id="cmpResult"><div class="empty">כאן תופיע טבלת השוואה: מחיר משוער, מזג אוויר, אוכל כשר, נוחות לשבת והתאמה לילדים.</div></div>
+    </div>
+  </section>
+
+  <!-- TRIPS -->
+  <section class="view" id="view-trips" hidden>
+    <div class="panel">
+      <h2>הטיולים שלי</h2>
+      <p class="note" style="margin-top:-6px;margin-bottom:14px">טיולים ששמרתם. רק אתם רואים אותם.</p>
+      <div class="list" id="tripList"><div class="empty">טוען…</div></div>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section class="view" id="view-tips" hidden>
+    <div class="grid">
+      <aside class="panel" id="tipFormPanel">
+        <h2>הוסיפו המלצה</h2>
+        <form class="plan" id="tipForm" autocomplete="off">
+          <label class="f">שם המקום<input type="text" id="tPlace" required placeholder="למשל: צימר אצל משפחת כהן"></label>
+          <div class="row">
+            <label class="f">עיר / אזור<input type="text" id="tCity" required placeholder="צפת"></label>
+            <label class="f">מדינה<input type="text" id="tCountry" value="ישראל"></label>
+          </div>
+          <label class="f">סוג
+            <select id="tCat">
+              <option>לינה</option><option>אוכל כשר</option><option>אטרקציה</option>
+              <option>בית כנסת</option><option>מסלול</option><option>טיפ חיסכון</option>
+            </select>
+          </label>
+          <label class="f">ההמלצה<textarea id="tText" required placeholder="מה טוב שם, למי מתאים, טיפים"></textarea></label>
+          <div class="row">
+            <label class="f">מחיר בערך<input type="text" id="tPrice" placeholder="450 ₪ ללילה"></label>
+            <label class="f">דירוג
+              <select id="tRate"><option value="5">5 – מצוין</option><option value="4">4 – טוב מאוד</option><option value="3">3 – סביר</option><option value="2">2 – פחות</option></select>
+            </label>
+          </div>
+          <label class="f">טלפון / קישור (לא חובה)<input type="text" id="tContact"></label>
+          <label class="f" id="tPhotoWrap" hidden>תמונה (לא חובה)<input type="file" id="tPhoto" accept="image/*"></label>
+          <button class="btn" type="submit" id="tipBtn">פרסום ההמלצה</button>
+          <div class="status" id="tipStatus" role="status"></div>
+          <p class="note">ההמלצות שלכם נכנסות גם לתכנון של מטיילים אחרים שנוסעים לאותו אזור.</p>
+        </form>
+      </aside>
+      <div>
+        <div class="filters">
+          <input type="text" id="tipSearch" placeholder="חיפוש לפי מקום, עיר או מדינה">
+          <select id="tipCatFilter"><option value="">כל הסוגים</option><option>לינה</option><option>אוכל כשר</option><option>אטרקציה</option><option>בית כנסת</option><option>מסלול</option><option>טיפ חיסכון</option></select>
+        </div>
+        <div class="list" id="tipList"><div class="empty">טוען המלצות…</div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const enc = encodeURIComponent;
+const HEB_DAYS = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
+const nis = n => (Number(n)||0).toLocaleString("he-IL") + " ₪";
+
+/* ---------- tabs ---------- */
+const TABS = ["plan","compare","trips","tips"];
+function showTab(){
+  let t = (location.hash||"").slice(1); if(!TABS.includes(t)) t = "plan";
+  TABS.forEach(n => { $("#view-"+n).hidden = n!==t; });
+  document.querySelectorAll("nav.tabs a").forEach(a => a.setAttribute("aria-current", a.dataset.tab===t ? "page" : "false"));
+  window.scrollTo(0,0);
+}
+addEventListener("hashchange", showTab); showTab();
+addEventListener("hashchange",()=>{ if(location.hash==="#compare"){ [["cFrom","dFrom"],["cTo","dTo"],["cAdults","adults"],["cKids","kids"],["cKidAges","kidAges"],["cOrigin","origin"],["cBudget","budget"]].forEach(([c,pId])=>{ const a=document.getElementById(c), b=document.getElementById(pId); if(a&&b&&!a.dataset.touched) a.value=b.value; }); } });
+document.addEventListener("input",e=>{ if(e.target.id&&/^c[A-Z]/.test(e.target.id)) e.target.dataset.touched="1"; });
+
+/* ---------- dates ---------- */
+function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function parseISO(s){ const [y,m,d]=String(s).split("-").map(Number); return new Date(y,(m||1)-1,d||1); }
+function daysBetween(a,b){ const out=[]; let d=parseISO(a); const e=parseISO(b); let guard=0; while(d<=e && guard++<40){ out.push(iso(d)); d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);} return out; }
+function niceDate(s){ const d=parseISO(s); return "יום "+HEB_DAYS[d.getDay()]+", "+d.getDate()+"/"+(d.getMonth()+1); }
+(function initDates(){
+  const now=new Date(); const add=(5-now.getDay()+7)%7||7; // next Friday-ish trip: Wed→Sun
+  const start=new Date(now.getFullYear(),now.getMonth(),now.getDate()+add+21); // ~3 weeks ahead, a Friday
+  const s=new Date(start.getFullYear(),start.getMonth(),start.getDate()-2);
+  const e=new Date(start.getFullYear(),start.getMonth(),start.getDate()+2);
+  $("#dFrom").value=iso(s); $("#dTo").value=iso(e);
+})();
+
+/* ---------- sun & Shabbat times ---------- */
+function sunUT(dateStr, lat, lng, zenith, rising){
+  const d=parseISO(dateStr); const y=d.getFullYear(), m=d.getMonth(), day=d.getDate();
+  const N=Math.round((Date.UTC(y,m,day)-Date.UTC(y,0,0))/864e5);
+  const rad=Math.PI/180, lngH=lng/15;
+  const t=N+((rising?6:18)-lngH)/24;
+  const M=0.9856*t-3.289;
+  let L=(M+1.916*Math.sin(M*rad)+0.020*Math.sin(2*M*rad)+282.634)%360; if(L<0)L+=360;
+  let RA=Math.atan(0.91764*Math.tan(L*rad))/rad; RA=(RA+360)%360;
+  RA=(RA+(Math.floor(L/90)*90-Math.floor(RA/90)*90))/15;
+  const sinDec=0.39782*Math.sin(L*rad), cosDec=Math.cos(Math.asin(sinDec));
+  const cosH=(Math.cos(zenith*rad)-sinDec*Math.sin(lat*rad))/(cosDec*Math.cos(lat*rad));
+  if(cosH>1||cosH<-1) return null;
+  let H=(rising?360-Math.acos(cosH)/rad:Math.acos(cosH)/rad)/15;
+  let UT=H+RA-0.06571*t-6.622-lngH;
+  const noon=12-lngH;
+  while(UT<noon-12)UT+=24; while(UT>noon+12)UT-=24;
+  return Date.UTC(y,m,day)+UT*36e5;
+}
+function fmtTZ(ms,tz){ try{ return new Intl.DateTimeFormat("he-IL",{hour:"2-digit",minute:"2-digit",hour12:false,timeZone:tz||undefined}).format(new Date(ms)); }catch(e){ return new Intl.DateTimeFormat("he-IL",{hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date(ms)); } }
+function shabbatInfo(dateStr, dest){
+  if(!dest || typeof dest.lat!=="number" || typeof dest.lng!=="number") return null;
+  const dow=parseISO(dateStr).getDay(); if(dow!==5 && dow!==6) return null;
+  const sunset=sunUT(dateStr,dest.lat,dest.lng,90.833,false); if(sunset==null) return null;
+  if(dow===5){
+    const isJlm=/ירושלים|jerusalem/i.test((dest.name||"")+" "+(dest.city||""));
+    const before=isJlm?40:18;
+    return {kind:"candle", label:"הדלקת נרות", time:fmtTZ(sunset-before*6e4,dest.timezone), sunset:fmtTZ(sunset,dest.timezone), before};
+  }
+  const tzeit=sunUT(dateStr,dest.lat,dest.lng,98.5,false);
+  return {kind:"havdala", label:"צאת השבת", time:fmtTZ(tzeit??(sunset+40*6e4),dest.timezone), sunset:fmtTZ(sunset,dest.timezone)};
+}
+
+/* ---------- icons ---------- */
+const ICONS={
+ "תקציב":'<path d="M3 7h18v12H3z"/><path d="M3 11h18M7 15h3"/>',
+ "מזג":'<circle cx="8" cy="9" r="3"/><path d="M8 2v2M2 9h2M3.8 4.8l1.4 1.4"/><path d="M9 20h9a4 4 0 0 0 0-8 5 5 0 0 0-9.5 1A3.5 3.5 0 0 0 9 20z"/>',
+ "איפה":'<path d="M3 20V9l9-5 9 5v11"/><path d="M9 20v-6h6v6"/>',
+ "מסלול":'<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7"/>',
+ "השכרת":'<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/><circle cx="7.5" cy="13" r="1"/><circle cx="16.5" cy="13" r="1"/>',
+ "קניות":'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+ "שווה":'<path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+ "אוכל":'<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10"/><path d="M17 3c-2 0-3 3-3 6s1 4 3 4v8"/>',
+ "בתי":'<path d="M4 21V10l8-6 8 6v11z"/><path d="M10 21v-5h4v5M12 8v4M10 10h4"/>',
+ "איך":'<path d="M12 3v18M16 7H10a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6H8"/>',
+ "לפני":'<path d="M9 11l3 3 8-8"/><path d="M20 12v7H4V5h11"/>',
+ "הנחות":'<path d="M20 12l-8 8-8-8V4h8z"/><circle cx="8" cy="8" r="1.5"/>',
+ "הוצאות":'<path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h4"/>',
+ "איך מגיעים":'<path d="M6 17V6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v11z"/><path d="M6 12h12M8 21l2-4M16 21l-2-4"/><circle cx="9" cy="14.5" r=".8"/><circle cx="15" cy="14.5" r=".8"/>',
+ "השבת":'<path d="M8 3v3M16 3v3"/><rect x="5" y="6" width="14" height="15" rx="2"/><path d="M9 13c1-2 2-3 3-5 1 2 2 3 3 5a3 3 0 0 1-6 0z"/>',
+ "הכנות":'<path d="M9 11l3 3 8-8"/><path d="M20 12v7H4V5h11"/>',
+ "מידע":'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+ "קברי":'<path d="M6 21V10a6 6 0 0 1 12 0v11z"/><path d="M4 21h16M12 9v6M9.5 11.5h5"/>',
+ "מה":'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V4h6v3M4 12h16"/>'
+};
+let tocObs=null;
+function buildToc(){
+  const toc=$("#toc"); if(!toc) return;
+  const secs=[...document.querySelectorAll("#result .sec")];
+  const items=[{el:$("#result .ticket"),label:"סקירה",icon:'<path d="M4 12l8-8 8 8M6 10v10h12V10"/>'}];
+  secs.forEach((sec,i)=>{ const h=sec.querySelector("h3"); if(!h) return;
+    const lab=[...h.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim()||h.textContent.trim();
+    const svg=h.querySelector(".hi svg"); sec.id="sec-"+i;
+    const SHORT={"השבת":"שבת","הכנות":"הכנות","מידע":"מידע מעשי","איך מגיעים":"נסיעות","קברי":"קברי צדיקים","מזג":"מזג אוויר","הנחות":"הנחות","הוצאות":"הוצאות","שווה":"עצירות בדרך","מסלול":"מסלול יומי","תקציב":"תקציב","לפני":"לפני היציאה"};
+    const k=Object.keys(SHORT).find(k=>lab.startsWith(k));
+    items.push({el:sec,label:k?SHORT[k]:lab,icon:svg?svg.innerHTML:""}); });
+  toc.innerHTML='<div class="toc-title">בתוכנית</div>'+items.map((it,i)=>'<button type="button" data-i="'+i+'"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'+it.icon+'</svg><span>'+esc(it.label)+'</span></button>').join("");
+  const btns=[...toc.querySelectorAll("button")];
+  btns.forEach(b=>b.onclick=()=>{ const el=items[+b.dataset.i].el; if(el) el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"}); });
+  tocObs?.disconnect();
+  if("IntersectionObserver" in window){
+    tocObs=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ const i=items.findIndex(x=>x.el===e.target); btns.forEach((b,j)=>b.classList.toggle("on",j===i)); const b=btns[i]; if(b&&toc.scrollWidth>toc.clientWidth+4) toc.scrollTo({left:b.offsetLeft-toc.clientWidth/2+b.offsetWidth/2,behavior:"smooth"}); } }); },{rootMargin:"-25% 0px -65% 0px"});
+    items.forEach(x=>x.el&&tocObs.observe(x.el));
+  }
+}
+function setHdr(){ const h=document.querySelector("header.top"); if(h) document.documentElement.style.setProperty("--hdr",h.offsetHeight+"px"); }
+addEventListener("resize",setHdr); setTimeout(setHdr,0);
+function decorate(root){
+  root.querySelectorAll(".sec h3").forEach(h=>{
+    const first=(h.textContent.trim().split(/\s+/)[0]||"");
+    const full=h.textContent.trim();
+    const key=Object.keys(ICONS).filter(k=>k.includes(" ")).find(k=>full.startsWith(k))||Object.keys(ICONS).find(k=>first.startsWith(k));
+    const cls={"אוכל":"h-food","בתי":"h-shul","השכרת":"h-car","מסלול":"h-route","קניות":"h-shop","איך":"h-money","הנחות":"h-money","קברי":"h-shul","איך מגיעים":"h-car","השבת":"h-food"}[key]||"";
+    if(key && !h.querySelector(".hi")) h.insertAdjacentHTML("afterbegin",'<span class="hi '+cls+'" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24">'+ICONS[key]+'</svg></span>');
+  });
+}
+
+/* ---------- live-price links ---------- */
+// Verified: Booking only keeps the details when ss is a city name it recognizes; an unknown place
+// sends the visitor to its homepage. Airbnb keeps them on he.airbnb.com. Google Hotels does not.
+function stayLinks(city, f){
+  const kidAges=Array.from({length:f.kids},(_,i)=>{ const a=(f.kidAges||[])[i]; return (a>=0&&a<18)?a:8; });
+  city=String(city||"").split(/[,(]/)[0].trim()||city;
+  const b=new URLSearchParams({ss:city, checkin:f.from, checkout:f.to, group_adults:f.adults, group_children:f.kids, no_rooms:1, order:"price", lang:"he", selected_currency:"ILS"});
+  kidAges.forEach(a=>b.append("age",a));
+  if(f.apt) b.set("nflt","ht_id=201");
+  const air=new URLSearchParams({query:city, checkin:f.from, checkout:f.to, adults:f.adults, children:f.kids, currency:"ILS"});
+  return [
+    ["Booking", "https://www.booking.com/searchresults.he.html?"+b.toString(), true],
+    ["Airbnb", "https://he.airbnb.com/s/"+enc(city)+"/homes?"+air.toString(), true]
+  ];
+}
+const areaOf=(d,f)=>d.bookingCity||d.searchArea||d.city||d.name||f.dest;
+// Verified: Kayak keeps place+dates with an airport code; city names can match the wrong place.
+function carLinks(c,d,f){
+  const code=[c&&c.pickupIATA, f.scope==="abroad"?d.nearestAirport:"TLV"].find(x=>/^[A-Za-z]{3}$/.test(x||""))||"TLV";
+  const main=[["Kayak – השוואת מחירים","https://www.kayak.com/cars/"+code.toUpperCase()+"/"+f.from+"/"+f.to+"?sort=price_a",true]];
+  const more=[["Economy Car Rentals","https://www.economycarrentals.com/he/"],["Rentalcars","https://www.rentalcars.com/he/"],["Discover Cars","https://www.discovercars.com/he"]];
+  if(f.scope!=="abroad") more.push(["אלדן","https://www.eldan.co.il/"],["שלמה SIXT","https://www.shlomo.co.il/"],["הרץ","https://www.hertz.co.il/"],["באדג'ט","https://www.budget.co.il/"]);
+  return {code:code.toUpperCase(), main, more};
+}
+const mapLink = q => "https://www.google.com/maps/search/"+enc(q);
+function linksHTML(arr){ return '<div class="links">'+arr.map(([t,u,main])=>'<a'+(main?' class="main"':'')+' href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(t)+'</a>').join("")+'</div>'; }
+
+/* ---------- capabilities ---------- */
+let sample=null, db=null, user=null, assets=null, downloads=null, uid=null, canWrite=null, isOwner=false;
+const caps = (async () => {
+  if(!window.claude || !claude.use) return;
+  [sample, db, user, assets, downloads] = await Promise.all([claude.use("sample"), claude.use("db"), claude.use("user"), claude.use("assets"), claude.use("downloads")]);
+  if(assets) $("#tPhotoWrap").hidden=false;
+  if(user){ uid = await user.id(); try{ canWrite = await user.can("data.write"); }catch(e){} isOwner = await user.isOwner(); }
+})();
+
+/* ---------- state ---------- */
+let current = null;   // {form, plan, example?, savedId?}
+
+function readForm(){
+  const kids=Math.max(0,parseInt($("#kids").value)||0);
+  return {
+    scope: $("#scopeAbroad").checked ? "abroad" : "il",
+    dest: $("#dest").value.trim(), origin: $("#origin").value.trim(),
+    from: $("#dFrom").value, to: $("#dTo").value, outTime: $("#outTime").value, backTime: $("#backTime").value,
+    adults: Math.max(1,parseInt($("#adults").value)||1), kids,
+    kidAges: $("#kidAges").value.split(/[,\s]+/).map(Number).filter(n=>n>=0 && n<18).slice(0,kids),
+    budget: Math.max(0,parseInt($("#budget").value)||0), level: $("#level").value,
+    kosher: $("#pKosher").checked, shul: $("#pShul").checked, shabbat: $("#pShabbat").checked,
+    family: $("#pFamily").checked, shop: $("#pShop").checked, multi: $("#pMulti").checked, countries: $("#scopeAbroad").checked && $("#pCountries").checked, tzadik: $("#pTzadik").checked, shopWhat: $("#shopWhat").value.trim(), rent: $("#pRent").checked, rentMode: $("#rentMode").value, save: $("#pSave").checked, car: $("#pCar").checked, apt: $("#pApt").checked,
+    extra: $("#extra").value.trim()
+  };
+}
+function fillForm(f){
+  (f.scope==="abroad"?$("#scopeAbroad"):$("#scopeIL")).checked=true;
+  $("#dest").value=f.dest||""; $("#origin").value=f.origin||""; $("#dFrom").value=f.from; $("#dTo").value=f.to; $("#outTime").value=f.outTime||""; $("#backTime").value=f.backTime||"";
+  $("#adults").value=f.adults; $("#kids").value=f.kids; $("#kidAges").value=(f.kidAges||[]).join(", ");
+  $("#budget").value=f.budget; $("#level").value=f.level;
+  ["Kosher","Shul","Shabbat","Family","Save","Car","Apt","Rent","Shop","Multi","Tzadik","Countries"].forEach(k=>{ $("#p"+k).checked=!!f[k.toLowerCase()]; });
+  $("#extra").value=f.extra||""; $("#rentMode").value=f.rentMode||"all"; $("#rentWrap").hidden=!f.rent; setTimeout(syncScope,0); $("#shopWhat").value=f.shopWhat||""; $("#shopWrap").hidden=!f.shop;
+}
+
+/* ---------- prompt ---------- */
+let tipsCache = [];
+function relevantTips(f){
+  const words=(f.dest+" ").split(/[\s,\-–]+/).filter(w=>w.length>=2);
+  return tipsCache.filter(t=>{ const hay=(t.place+" "+t.city+" "+t.country); return words.some(w=>hay.includes(w)); }).slice(0,30);
+}
+function buildParts(f){
+  const days=daysBetween(f.from,f.to);
+  const tips=relevantTips(f);
+  const prefs=[
+    f.kosher&&"אוכל כשר בלבד (מסעדות בהשגחה, סופרים כשרים, בתי חב\"ד בחו\"ל). לא להמליץ על שום מקום אוכל לא כשר.",
+    f.shul&&"לינה בהליכה לבית כנסת, ולציין בתי כנסת קרובים.",
+    f.shabbat&&"בשבת אין נסיעות ואין פעילות בתשלום: רק תפילות, סעודות, מנוחה וטיול רגלי קרוב ללינה. ביום שישי לסיים פעילות מוקדם ולהגיע ללינה של שבת לפחות שעתיים לפני השקיעה.",
+    f.family&&f.kids>0&&"מתאים למשפחה עם ילדים בגילאים "+(f.kidAges.join(", ")||"שונים")+": מסלולים קלים, הפסקות, לא יותר מדי נסיעות ביום.",
+    !(f.family&&f.kids>0)&&"אין צורך בהתאמות מיוחדות לילדים – לתכנן לפי המבוגרים שנוסעים.",
+    !f.shabbat&&"אין צורך לפרט זמני שבת.",
+    f.save&&"חיסכון מקסימלי: להעדיף אפשרויות זולות, כרטיסים משפחתיים, אטרקציות חינמיות, ארוחות מהסופר/פיקניק, ולתת טיפים לחיסכון.",
+    f.rent&&f.rentMode!=="part"?"רכב שכור לכל הטיול: איסוף בשדה התעופה מיד בנחיתה (בטיול בארץ – מנתב\"ג או מסניף קרוב לבית לפי מה שזול יותר) והחזרה בשדה התעופה ביום החזרה. כל הנסיעות בטיול ברכב – לכן ב-transport לפרט את הנסיעות ברכב עם זמן ודלק/אגרות משוערים, ולא תחבורה ציבורית. ב-carRental: מקום איסוף והחזרה, pickupIATA, גודל רכב מתאים למספר הנוסעים והמזוודות"+(f.kids>0?" (כולל מושבי בטיחות לילדים)":"")+", מחיר משוער ליום ולכל התקופה, ביטוח מומלץ, חניה ליד הלינה, וטיפים לחיסכון.":f.rent?"צריך רכב שכור: להמליץ איפה לאסוף (שדה תעופה/עיר), איזה גודל רכב מתאים למשפחה (כולל מושבי בטיחות לילדים), מחיר משוער ליום וטיפים לחיסכון בהשכרה.":(f.car?"יש רכב פרטי.":"אין רכב – להסתמך על תחבורה ציבורית/הליכה, ולציין איך מגיעים, ולציין אם כדאי בכל זאת לשכור רכב."),
+    f.apt&&"מעדיפים דירה/צימר עם מטבח על פני מלון.",
+    f.multi?"לינה בכמה מקומות: לחלק את הטיול ל-2–3 בסיסי לינה לפי האזורים במסלול, כדי לקצר נסיעות. לכל אפשרות לינה ציין checkin ו-checkout (YYYY-MM-DD) של הלילות שלה ואת bookingCity של העיר שלה, ותן 1–2 אפשרויות לכל בסיס. ב-days.base ציין איפה ישנים בכל לילה. את שבת עדיף לא לחלק – אותה לינה משישי עד מוצאי שבת.":"לינה במקום אחד לכל הטיול (בסיס קבוע), אלא אם המרחקים ממש לא מאפשרים.",
+    f.countries&&"טיול שעובר בין כמה מדינות קרובות: לבנות מסלול הגיוני בין המדינות (בלי חזרות מיותרות), עם בסיס לינה בכל מדינה/אזור ו-checkin/checkout לכל לינה, טיסה הלוך לעיר אחת וחזור מעיר אחרת אם זה זול ונוח יותר. בכל מעבר בין מדינות – איך עוברים (רכבת/אוטובוס/רכב), משך ומחיר. לציין הבדלים בין המדינות: מטבע, שקע חשמל, אגרות כביש/ויניטה, כללים להשכרת רכב שחוצה גבול (אם רלוונטי) וכרטיסי רכבת אזוריים שמשתלמים. בשבת לא עוברים מדינה.",
+    f.tzadik&&"לשלב ביקורים בקברי צדיקים ובמקומות קדושים באזור ובדרך (רק מקומות מוכרים שאתה בטוח בקיומם ובמיקומם), עם זמן לתפילה, וציין בכל אחד את שם הצדיק. לציין אם יש הפרדה/כללי צניעות או שעות פתיחה מיוחדות. "+(f.scope==="abroad"?"בחו\"ל – ציוני צדיקים מוכרים ביעד ובסביבתו.":""),
+    f.shop&&("רוצים לעשות קניות"+(f.shopWhat?" (בעיקר: "+f.shopWhat+")":"")+": להמליץ על קניונים, אאוטלטים, שווקים ורחובות קניות ביעד ובדרך, עם רמת המחירים בכל אחד (זול/בינוני/יקר) ומה כדאי לקנות שם, לשבץ זמן קניות במסלול היומי (לא בשבת), ולתת טיפים לחיסכון בקניות"+(f.scope==="abroad"?" כולל החזר מע\"מ לתיירים ומגבלות משקל מזוודה בטיסה":"")+".")
+  ].filter(Boolean).map(s=>"- "+s).join("\n");
+
+  return {prefs, days, tips};
+}
+function timesLine(f){
+  const ab=f.scope==="abroad"; let t="";
+  if(f.outTime) t+=ab?`- טיסה הלוך ממריאה מתל אביב ב-${f.from} בשעה ${f.outTime}: לתכנן הגעה לנתב"ג 3 שעות לפני, להעריך את שעת הנחיתה ביעד (כולל הפרש שעות), ולהתחיל את היום הראשון רק אחרי הנחיתה, איסוף מזוודות והגעה ללינה.\n`:`- יוצאים מהבית ב-${f.from} בשעה ${f.outTime}: היום הראשון מתחיל מהשעה הזו, כולל זמן הנסיעה.\n`;
+  if(f.backTime) t+=ab?`- טיסה חזור ממריאה מהיעד ב-${f.to} בשעה ${f.backTime} (שעון מקומי): לתכנן צ'ק-אאוט, הגעה לשדה התעופה 3 שעות לפני, ובאותו יום רק פעילות קרובה שמסתיימת בזמן. אם הטיסה מוקדמת בבוקר – היום הקודם הוא היום המלא האחרון.\n`:`- רוצים להגיע הביתה ב-${f.to} עד השעה ${f.backTime}: לתכנן את היום האחרון כך שהיציאה חזרה תהיה בזמן, כולל זמן הנסיעה.\n`;
+  return t;
+}
+function promptHead(f,prefs,days){
+  return `אתה מתכנן טיולים למשפחות שומרות תורה ומצוות. כתוב הכל בעברית.
+
+פרטי הטיול:
+- סוג: ${f.scope==="abroad"?"חו\"ל":"בארץ"}
+- יעד: ${f.dest}
+- יציאה מ: ${f.origin||"לא צוין"}
+- תאריכים: ${f.from} עד ${f.to} (${days.length} ימים): ${days.map(d=>d+" "+HEB_DAYS[parseISO(d).getDay()]).join(", ")}
+- מבוגרים: ${f.adults}, ילדים: ${f.kids}${f.kidAges.length?" (גילאים "+f.kidAges.join(", ")+")":""}
+- תקציב כולל: ${f.budget?f.budget+" ₪ "+(f.scope==="abroad"?"(כולל טיסות)":""):"לא נקבע – לתכנן במחיר סביר וחסכוני"}
+${timesLine(f)}- רמת לינה: ${f.level}
+דגשים:
+${prefs}
+${f.extra?"- בקשה מיוחדת: "+f.extra:""}
+
+כללים מחייבים:
+- רק אטרקציות שמתאימות למשפחה חרדית: טבע, נופים, מסלולים, מים, פארקים, גני חיות, חוות, מוזיאוני מדע וטבע, מורשת יהודית, קברי צדיקים ובתי כנסת עתיקים, תצפיות.
+- לא להמליץ על כנסיות, מסגדים, מקדשים או אתרים של דתות אחרות, לא על הופעות, מועדונים, ברים, אירועי ספורט, קולנוע, חופים או בריכות מעורבים.
+- רק מקומות ופרטים שאתה בטוח שהם קיימים באמת. אם אינך בטוח בשם מסוים, תאר באופן כללי במקום להמציא.
+- תמיד להעדיף את האפשרות הזולה ביותר שעדיין מומלצת ונוחה למשפחה. אם יש זולה יותר אך פחות נוחה – ציין אותה כחלופה.
+- מחירים: הערכה בשקלים, בטווח, לא כמחיר סופי.`;
+}
+function buildPrompt(f, prevPlan, change){
+  const {prefs,days,tips}=buildParts(f);
+  return promptHead(f,prefs,days)+`
+- לארגן את הטיול מא' ועד ת': כל קטע נסיעה מהבית ועד החזרה הביתה ברשימת transport (הגעה לשדה התעופה, טיסות, רכבות, אוטובוסים, מוניות/העברות, נסיעות ברכב). ברכבת/אוטובוס ציין חברה/קו רק אם אתה בטוח, משך, מחיר משוער לכל המשפחה וטיפ להזמנה. בשבת אין נסיעות.
+- המסלול היומי מלא ומציאותי: בכל יום ארוחת בוקר, צהריים וערב (איפה/מה ובכמה), כל נסיעה עם משך הזמן${f.kids>0&&f.family?", זמני מנוחה לילדים":""}${f.shul||f.shabbat?", ותפילות":""}. ביום ההגעה – צ'ק-אין; ביום האחרון – צ'ק-אאוט ודרך חזרה.
+- לכל דבר מחיר משוער: כל פריט במסלול (cost – "חינם" אם בחינם), כל לינה, כל מקום אוכל (priceRange לסועד), כל עצירה, כל מקום קדוש, כל נסיעה.
+- ב-bookingCity כתוב באנגלית רק את שם העיר כפי שהוא ב-Booking (למשל "Safed", "Rome"). ב-bookingArea: "Neighborhood, City, Country". ב-mapQuery: שאילתה באנגלית (שם + עיר). ב-destination.searchArea: "City, Country".
+${tips.length?`
+המלצות של מטיילים מהקהילה לאזור (שלב כשמתאים וציין "המלצת מטיילים"):
+${tips.map(t=>`- [${t.cat}] ${t.place}, ${t.city} ${t.country}: ${t.text}${t.price?" (מחיר: "+t.price+")":""}`).join("\n")}`:""}
+${prevPlan?`
+זו התוכנית הקודמת (JSON):
+${JSON.stringify(prevPlan).slice(0,60000)}
+
+שנה אותה לפי הבקשה הבאה ושמור על כל השאר: ${change}`:""}
+
+החזר JSON בלבד, בסדר השדות הזה בדיוק:
+{"title":"שם קצר לטיול","summary":"2-3 משפטים","destination":{"name":"","city":"","country":"","lat":0,"lng":0,"timezone":"Asia/Jerusalem","localCurrency":"ILS","nearestAirport":"קוד IATA, למשל FCO","bookingCity":"","searchArea":""},
+"budget":{"lodging":0,"food":0,"activities":0,"transport":0,"flights":0,"total":0,"note":"הסבר קצר"},
+"transport":[{"date":"YYYY-MM-DD","from":"","to":"","fromEn":"","toEn":"","mode":"רכבת|אוטובוס|טיסה|מונית|העברה|רכב|מעבורת|הליכה","operator":"","duration":"","price":"","cheaperAlt":"","tip":""}],
+"lodging":[{"name":"","type":"מלון|דירה|צימר|אכסניה|בית הארחה","area":"","why":"","pricePerNight":"","nearSynagogue":true,"familyFriendly":true,"bookingCity":"","bookingArea":"","mapQuery":"","checkin":"YYYY-MM-DD","checkout":"YYYY-MM-DD"}],
+"days":[{"date":"YYYY-MM-DD","title":"","base":"איפה ישנים","items":[{"time":"09:00","kind":"attraction|food|travel|prayer|rest|shopping","name":"","desc":"","cost":"","kidsOk":true,"mapQuery":""}]}],
+"onTheWay":[{"name":"","where":"","desc":"","price":"","mapQuery":""}],
+"holySites":[{"name":"","tzadik":"","area":"","price":"","note":"","mapQuery":""}],
+"food":[{"name":"","area":"","kind":"בשרי|חלבי|סופר כשר|בית חב\\"ד|מאפייה|פיצריה","priceRange":"","note":"","mapQuery":""}],
+"synagogues":[{"name":"","area":"","note":"","mapQuery":""}],
+"carRental":{"recommended":true,"pickup":"","pickupQuery":"","pickupIATA":"","carType":"","pricePerDay":"","total":"","tips":[""]},
+"shopping":[{"name":"","type":"","area":"","whatGood":"","priceLevel":"זול|בינוני|יקר","priceNote":"","tips":"","mapQuery":""}],"shoppingTips":[""]}
+סכומי budget במספרים בשקלים. 3-5 אפשרויות לינה, 4-8 מקומות אוכל, 2-5 בתי כנסת, יום לכל תאריך בטווח. holySites ו-shopping ריקים אם לא התבקשו.`;
+}
+function buildExtrasPrompt(f){
+  const {prefs,days}=buildParts(f);
+  const abroad=f.scope==="abroad";
+  return promptHead(f,prefs,days)+`
+
+המשימה עכשיו: לא המסלול עצמו, אלא כל ההכנות והמידע המעשי לטיול הזה, כדי שהמשפחה לא תשכח שום דבר.
+- מזג אוויר: הממוצע הרב-שנתי לעונה ביעד (לא תחזית), טמפרטורות יום ולילה בצלזיוס וסיכוי לגשם/שלג.
+- רשימת אריזה מותאמת למזג האוויר, ${f.kids>0?"לגילאי הילדים ":""}ולסוג הטיול${abroad?", לטיסה ולחו\"ל":""}${f.shabbat?", כולל לשבת":""}${f.kids>0?", וקטגוריה נפרדת לכל ילד לפי הגיל שלו":""}.
+- preTrip: לוח זמנים של הכנות לפי הסדר – מה לעשות ומתי (למשל: 8 שבועות לפני – להזמין טיסות; 3 שבועות לפני – ${abroad?"לבדוק תוקף דרכונים, ביטוח נסיעות, הזמנת ארוחה כשרה בטיסה, הרשמה לאשרה אם נדרשת":"להזמין לינה וכרטיסים"}; שבוע לפני – ...; יום לפני – ...). 8–14 משימות.
+${f.countries?"- זה טיול בכמה מדינות: ב-practical לפרט לכל מדינה בנפרד את מה ששונה (מטבע, חשמל, חירום, תחבורה, אגרות כביש).\n":""}- practical: מידע מעשי ליעד – מסמכים, כסף ותשלום${abroad?" (מטבע, מזומן, כרטיס אשראי, טיפים)":""}, טלפון וגלישה${abroad?" (eSIM/חבילת חו\"ל)":""}${abroad?", שקע חשמל ומתח":""}, מספרי חירום, בריאות וביטוח, כרטיס תחבורה מקומי, ${abroad?"בית חב\"ד/קהילה (רק אם אתה בטוח), מילים שימושיות בשפה המקומית":"טלפונים שימושיים"}.
+${f.shabbat?"":"- shabbatPlan: השאר ריק אם לא נדרש.\n"}- shabbatPlan (אם יש שבת בטיול): איפה עושים שבת, איך מסדרים סעודות (בישול עצמי/הזמנה/בית חב"ד), מה לקנות מראש (חלות, יין, נרות וכו') ואיפה, ומה להכין לפני שבת. אל תפסוק הלכה.
+- הנחות והטבות: סוגי הנחות לבדוק (כרטיסים משפחתיים, מנויים, קופות חולים, מועדוני אשראי, כרטיסי עיר) – בלי להמציא אחוזים או מבצעים.
+- טיפים לחיסכון, טיפים כלליים, ומה לבדוק לפני היציאה.
+
+החזר JSON בלבד, בסדר השדות הזה:
+{"weather":{"summary":"","dayTemp":"","nightTemp":"","rain":"","notes":""},
+"preTrip":[{"when":"","task":"","why":""}],
+"practical":[{"topic":"","info":""}],
+"shabbatPlan":{"where":"","meals":"","buy":[""],"prep":[""]},
+"packing":[{"category":"","items":[""]}],
+"discounts":[{"name":"","how":""}],
+"saving":[""],"tips":[""],"verify":[""]}`;
+}
+
+/* ---------- plan run ---------- */
+let ctl=null;
+$("#pRent").addEventListener("change",()=>{ $("#rentWrap").hidden=!$("#pRent").checked; });
+$("#pShop").addEventListener("change",()=>{ $("#shopWrap").hidden=!$("#pShop").checked; });
+function syncScope(){ const ab=$("#scopeAbroad").checked;
+  $("#outTimeLbl").textContent=ab?"שעת טיסה הלוך":"שעת יציאה מהבית"; $("#backTimeLbl").textContent=ab?"שעת טיסה חזור":"שעת חזרה הביתה";
+  $("#timeNote").textContent=ab?"לא חובה. שעות ההמראה לפי כרטיס הטיסה – התוכנית תסתדר לפיהן.":"לא חובה. אם יודעים, התוכנית תסתדר לפי השעות."; $("#multiCountryChip").hidden=!ab; $("#dest").placeholder=ab?($("#pCountries").checked?"למשל: הולנד ובלגיה, או שווייץ וצפון איטליה":"למשל: רומא, אנטוורפן, לונדון"):"למשל: צפת והגליל, ירושלים, אילת"; }
+["scopeIL","scopeAbroad","pCountries"].forEach(id=>$("#"+id).addEventListener("change",syncScope)); syncScope();
+$("#planForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const f=readForm();
+  if(!f.dest){ setStatus("#planStatus","כתבו יעד.",true); return; }
+  if(f.to<f.from){ setStatus("#planStatus","תאריך הסיום לפני תאריך ההתחלה.",true); return; }
+  const n=daysBetween(f.from,f.to).length; if(n>14){ setStatus("#planStatus","אפשר לתכנן עד 14 ימים בכל פעם.",true); return; }
+  await runPlan(f);
+});
+
+const CORE_W=[["title",3],["budget",4],["transport",9],["lodging",12],["days",44],["onTheWay",5],["holySites",4],["food",8],["synagogues",4],["carRental",3],["shopping",4]];
+const EXTRA_W=[["weather",6],["preTrip",16],["practical",18],["shabbatPlan",10],["packing",24],["discounts",6],["saving",8],["tips",6],["verify",6]];
+function streamProgress(text,W,nDays){
+  // how far the model got, by which top-level field it is writing now
+  let total=W.reduce((a,x)=>a+x[1],0), done=0, cur=-1, at=-1;
+  W.forEach(([k],i)=>{ const j=text.lastIndexOf('"'+k+'"'); if(j>at){ at=j; cur=i; } });
+  if(cur<0) return text.length?0.01:0;
+  for(let i=0;i<cur;i++) done+=W[i][1];
+  let frac=0.5;
+  const key=W[cur][0], part=text.slice(at);
+  if(key==="days"&&nDays){ const n=(part.match(/"date"\s*:/g)||[]).length; frac=Math.min(1,Math.max(0,(n-0.5)/nDays)); }
+  else if(Array.isArray(W[cur])&&/^\s*"\w+"\s*:\s*\[/.test(part)){ const n=(part.match(/\{/g)||[]).length; frac=Math.min(.95,n/6); }
+  return Math.min(.99,(done+W[cur][1]*frac)/total);
+}
+async function runPlan(f, prevPlan, change){
+  await caps;
+  if(!sample){ setStatus("#planStatus","התכנון החכם זמין כשפותחים את הדף בתוך Claude עם חשבון מחובר.",true); return; }
+  ctl?.abort(); ctl=new AbortController();
+  $("#goBtn").disabled=true; setStatus("#planStatus","");
+  const nDays=daysBetween(f.from,f.to).length;
+  LOAD_LINES=loadLinesFor(f);
+  renderLoading(prevPlan?"מעדכנים את התוכנית":"מתכננים לכם טיול", !prevPlan);
+  const EXTRA_KEYS=["weather","preTrip","practical","shabbatPlan","packing","discounts","saving","tips","verify"];
+  try{
+    const coreOpts={ signal: ctl.signal, onText: ({text})=>{ if(load){ if(!load.first) load.first=Date.now(); load.core=streamProgress(text,CORE_W,nDays); } } };
+    let prevCore=null;
+    if(prevPlan){ coreOpts.cache=false; prevCore={...prevPlan}; EXTRA_KEYS.forEach(k=>delete prevCore[k]); }
+    const coreP=sample.json(buildPrompt(f,prevCore,change), coreOpts);
+    const extraP=prevPlan ? Promise.resolve(null) : sample.json(buildExtrasPrompt(f), { signal: ctl.signal, onText: ({text})=>{ if(load){ if(!load.first) load.first=Date.now(); load.extra=streamProgress(text,EXTRA_W,0); } } }).catch(e=>{ if(e?.code==="cancelled") throw e; return null; });
+    const core=await coreP;
+    if(!core || !Array.isArray(core.days)) throw {code:"invalid_json"};
+    if(load){ load.core=1; load.coreDone=Date.now(); }
+    const extras=await extraP;
+    let plan={...core};
+    if(prevPlan) EXTRA_KEYS.forEach(k=>{ if(prevPlan[k]!=null) plan[k]=prevPlan[k]; });
+    else if(extras) EXTRA_KEYS.forEach(k=>{ if(extras[k]!=null) plan[k]=extras[k]; });
+    stopLoading();
+    current={form:f, plan, savedId: current?.savedId && prevPlan ? current.savedId : null, packed: prevPlan ? (current?.packed||{}) : {}, picked: prevPlan ? (current?.picked||{}) : {}, prepDone: prevPlan ? (current?.prepDone||{}) : {}, expenses: prevPlan ? (current?.expenses||[]) : []};
+    renderPlan();
+  }catch(err){
+    ctl?.abort();
+    const msg={not_granted:"לא ניתן אישור לשימוש ב-Claude בדף הזה.",rate_limited:"יותר מדי בקשות כרגע. נסו שוב בעוד כמה דקות.",invalid_json:"התשובה לא הגיעה בפורמט תקין. לחצו שוב לנסות.",refused:"הבקשה לא התקבלה. נסו לנסח את היעד אחרת.",cancelled:"בוטל.",session_expired:"צריך להתחבר מחדש ל-Claude."}[err?.code]||"משהו השתבש. נסו שוב.";
+    stopLoading(); setStatus("#planStatus",msg,true);
+    if(current) renderPlan(); else renderPlaceholder();
+  }finally{ $("#goBtn").disabled=false; }
+}
+function setStatus(sel,msg,err){ const el=$(sel); el.textContent=msg; el.classList.toggle("err",!!err); }
+
+/* ---------- render ---------- */
+function loadLinesFor(f){
+  f=f||{};
+  return [
+    "מחפש לינה במחיר טוב…",
+    f.scope==="abroad"?"בודק טיסות, רכבות ואוטובוסים…":"בודק דרכי הגעה ונסיעות…",
+    "בונה מסלול יומי…",
+    f.kosher&&"בודק מסעדות כשרות באזור…",
+    f.shul&&"מאתר בתי כנסת קרובים ללינה…",
+    f.shabbat&&"מחשב זמני שבת ומסדר את השבת…",
+    f.family&&f.kids>0&&"בונה מסלול נוח לילדים…",
+    f.tzadik&&"מוסיף קברי צדיקים בדרך…",
+    f.rent&&"בודק השכרת רכב…",
+    f.shop&&"מחפש מקומות קניות טובים…",
+    f.countries&&"מסדר את המעברים בין המדינות…",
+    "מחפש עצירות שוות בדרך…",
+    "בודק את מזג האוויר הרגיל בעונה…",
+    "מכין רשימת ציוד לאריזה…",
+    "מכין לוח הכנות לפני היציאה…",
+    "מחשב תקציב משוער…",
+    f.save&&"מחפש טיפים לחיסכון…"
+  ].filter(Boolean);
+}
+let LOAD_LINES=loadLinesFor();
+const LOAD_LINES_OLD=["מחפש לינה במחיר טוב…","בודק טיסות, רכבות ואוטובוסים…","מכין לוח הכנות לפני היציאה…","מסדר את השבת…","בודק מסעדות כשרות באזור…","מאתר בתי כנסת קרובים ללינה…","מחשב זמני שבת…","בונה מסלול נוח לילדים…","מחפש עצירות שוות בדרך…","בודק את מזג האוויר הרגיל בעונה…","מכין רשימת ציוד לאריזה…","מחשב תקציב משוער…","מחפש טיפים לחיסכון…"];
+let load=null;
+const GLOBE='<svg class="globe" viewBox="-110 -80 220 160" aria-hidden="true">'
+  +'<defs><clipPath id="gclip"><circle r="50"/></clipPath><radialGradient id="gshade" cx="-0.35" cy="-0.35" r="1.1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></radialGradient></defs>'
+  +'<g transform="rotate(-18)"><path class="orbit back" d="M-88 0 A88 30 0 0 1 88 0"/></g>'
+  +'<circle r="50" fill="var(--ocean)"/>'
+  +'<g clip-path="url(#gclip)"><g class="lands">'
+  +[0,200].map(x=>'<g transform="translate('+x+' 0)" fill="var(--land)"><path d="M-70 -30c10-12 30-14 38-6s4 18-8 22-10 14-22 12-14-16-8-28z"/><path d="M-20 -40c14-6 34 0 36 10s-10 10-8 20 18 8 14 20-26 10-30-2-2-18-12-24-12-18 0-24z"/><path d="M30 -8c12-4 26 2 26 14s-12 22-22 18-14-28-4-32z"/><path d="M60 -36c10-4 22 0 22 8s-10 8-18 6-10-10-4-14z"/><path d="M-60 18c8-4 18 0 18 8s-8 14-16 10-8-14-2-18z"/></g>').join("")
+  +'</g><g class="meridians" fill="none" stroke="var(--grid)" stroke-width=".7"><ellipse rx="18" ry="50"/><ellipse rx="36" ry="50"/><path d="M-50 0h100M-46 -20h92M-46 20h92"/></g></g>'
+  +'<circle r="50" fill="url(#gshade)"/>'
+  +'<g transform="rotate(-18)"><path class="orbit" d="M88 0 A88 30 0 0 1 -88 0"/>'
+  +'<g class="oplane"><path d="M-10 0 L7 -1.8 C11 -1.8 13 -.9 13 0 C13 .9 11 1.8 7 1.8Z" fill="#fff" stroke="var(--plane-2)" stroke-width=".7"/><path d="M1 -.8 L-5 -9 L-2 -9 L6 -.8Z M1 .8 L-5 9 L-2 9 L6 .8Z" fill="var(--plane-2)"/><path d="M-8 -.8 L-11 -5 L-9 -5 L-5 -.8Z" fill="var(--plane-2)"/></g></g></svg>';
+function renderLoading(msg,both){
+  stopLoading();
+  load={t0:Date.now(),first:0,core:0,extra:both?0:1,both,line:0,timer:null,shown:0,eta:null};
+  $("#result").innerHTML='<div class="loader" role="status" aria-live="polite">'+GLOBE
+    +'<b class="loader-title">'+esc(msg)+'</b><div class="loader-line" id="loadLine">'+LOAD_LINES[0]+'</div>'
+    +'<div class="progress" aria-hidden="true"><i id="loadBar"></i></div>'
+    +'<div class="loader-meta"><span id="loadPct" class="pct">0%</span><span id="loadEta">מתחילים…</span><button class="btn ghost small" id="stopBtn" type="button">עצירה</button></div>'
+    +'<div class="note">התכנון לוקח בדרך כלל 1–3 דקות. אפשר להמשיך לגלוש בינתיים.</div></div>';
+  $("#stopBtn").onclick=()=>ctl?.abort();
+  load.timer=setInterval(tickLoading,500);
+}
+function tickLoading(){
+  if(!load||!$("#loadBar")){ stopLoading(); return; }
+  const now=Date.now(), el=(now-load.t0)/1000;
+  let real;               // 0..1 of the whole job
+  if(!load.first){        // still thinking: creep toward 12%
+    real=0.12*(1-Math.exp(-el/30));
+  }else{
+    const w=load.both?0.74:1, prog=w*load.core+(1-w)*load.extra;
+    real=0.12+0.88*prog;
+    // ETA from the actual writing speed since the first words
+    const ws=(now-load.first)/1000;
+    if(prog>0.03){ const est=ws/prog*(1-prog); load.eta=load.eta==null?est:Math.min(load.eta+0.5,0.7*load.eta+0.3*est); }
+  }
+  load.shown=Math.max(load.shown,Math.min(.99,real));        // never goes backwards
+  const pct=Math.round(load.shown*100);
+  $("#loadBar").style.width=(load.shown*100).toFixed(1)+"%";
+  $("#loadPct").textContent=pct+"%";
+  let t;
+  if(!load.first) t=el<8?"מתחילים…":"חושב על המסלול הכי מתאים…";
+  else if(load.eta==null) t="מעריך זמן…";
+  else { const r=Math.max(2,Math.round(load.eta)); t="נותרו בערך "+(r>=60?Math.floor(r/60)+":"+String(r%60).padStart(2,"0")+" דקות":r+" שניות"); load.eta=Math.max(0,load.eta-0.5); }
+  $("#loadEta").textContent=t;
+  if(Math.round(el*2)%8===0){ load.line=(load.line+1)%LOAD_LINES.length; const ln=$("#loadLine"); if(ln){ ln.classList.remove("in"); void ln.offsetWidth; ln.textContent=LOAD_LINES[load.line]; ln.classList.add("in"); } }
+}
+function stopLoading(){ if(load?.timer) clearInterval(load.timer); load=null; }
+function renderPlaceholder(){
+  current=null;
+  const F=[["איפה לישון","לינה במחיר טוב, עם קישורים ל-Booking ו-Airbnb על התאריכים שלכם"],["מסלול יומי","מה עושים בכל יום, עם ניווט ב-Waze לכל עצירה"],["אוכל כשר ובתי כנסת","מסעדות, סופרים ובתי כנסת ליד הלינה"],["זמני שבת","הדלקת נרות וצאת שבת לפי המקום"],["מזג אוויר וציוד","מה צפוי בעונה ומה לארוז, גם לכל ילד"],["תקציב וחיסכון","כמה זה יעלה בערך ואיך לחסוך"]];
+  $("#result").innerHTML='<div class="start"><h3>הטיול שלכם יופיע כאן</h3><p>ממלאים את הטופס ולוחצים "תכננו לי טיול". תוך דקה-שתיים תקבלו:</p><ul class="start-list">'
+    +F.map(([t,d])=>'<li><b>'+t+'</b><span>'+d+'</span></li>').join("")+'</ul></div>';
+}
+
+function renderPlan(){
+  const {form:f, plan:p}=current; const d=p.destination||{};
+  const days=daysBetween(f.from,f.to);
+  const travelers=f.adults+f.kids;
+  const B=p.budget||{};
+  const parts=[["לינה",B.lodging,"--c1"],["אוכל",B.food,"--c2"],["אטרקציות",B.activities,"--c3"],["נסיעות",B.transport,"--c4"],["טיסות",B.flights,"--c5"]].filter(x=>Number(x[1])>0);
+  const total=Number(B.total)||parts.reduce((a,x)=>a+Number(x[1]),0);
+  const diff=f.budget? f.budget-total : null;
+
+  let h="";
+  h+='<div class="ticket"><div class="main">'+(current.example?'<span class="example-tag">דוגמה — מלאו את הטופס כדי לתכנן טיול משלכם</span><br>':'')
+    +'<div class="eyebrow">כרטיס טיול · '+(f.scope==="abroad"?'חו"ל':'בארץ')+'</div><h2>'+esc(p.title||f.dest)+'</h2>'
+    +'<div class="route"><span>'+esc(f.origin||"")+'</span><span aria-hidden="true">←</span><span>'+esc(d.city||d.name||f.dest)+(d.country&&d.country!=="ישראל"?", "+esc(d.country):"")+'</span><span>·</span><span>'+esc(niceDate(f.from))+(f.outTime?' '+esc(f.outTime):'')+' עד '+esc(niceDate(f.to))+(f.backTime?' '+esc(f.backTime):'')+'</span></div></div>'
+    +'<div class="stub"><div><div class="eyebrow">ימים</div><b>'+days.length+'</b></div><div><div class="eyebrow">נוסעים</div><b>'+travelers+'</b></div></div></div>';
+
+  h+='<p class="summary">'+esc(p.summary||"")+'</p>';
+  h+='<p class="pick-hint">בכל המלצה אפשר ללחוץ "בחירה" על מה שמתאים לכם. בסוף לוחצים "דף סיכום" ומקבלים את כל הטיול עם מה שבחרתם.</p>';
+
+  h+='<div class="actions toolbar">'
+    +(current.example?'':'<button class="btn small" id="saveBtn" type="button">'+(current.savedId?'עדכון בטיולים שלי':'שמירה לטיולים שלי')+'</button>')
+    +'<button class="btn small" id="sumBtn" type="button">דף סיכום<span id="sumCount"></span></button>'
+    +'<button class="btn ghost small" id="driveBtn" type="button">מצב בטיול</button>'
+    +'<a class="btn ghost small" id="waBtn" href="'+esc(waLink())+'" target="_blank" rel="noopener">שליחה בוואטסאפ</a>'
+    +'<button class="btn ghost small" id="dlBtn" type="button" hidden>הורדה להדפסה</button>'
+    +'<button class="btn ghost small" id="icsBtn" type="button" hidden>הוספה ליומן</button>'
+    +'<button class="btn ghost small" id="copyBtn" type="button">העתקה</button>'
+    +'<span class="status" id="saveStatus"></span></div>';
+  if(!current.example){
+    h+='<div class="refine"><input type="text" id="refineIn" placeholder="רוצים לשנות? למשל: יום רביעי בלי נסיעות ארוכות"><button class="btn ghost small" id="refineBtn" type="button">עדכון התוכנית</button></div>';
+  }
+
+  // budget
+  h+='<div class="panel sec"><div class="budget-total"><h3>תקציב משוער</h3><div><b>'+nis(total)+'</b>'
+    +(diff!=null&&total?(diff>=0?' <span class="under">'+nis(diff)+' מתחת לתקציב</span>':' <span class="over">'+nis(-diff)+' מעל התקציב</span>'):'')+'</div></div>';
+  if(total>0){ h+='<div class="budget-bar" role="img" aria-label="חלוקת התקציב">'+parts.map(x=>'<i style="width:'+(Number(x[1])/total*100).toFixed(2)+'%;background:var('+x[2]+')"></i>').join("")+'</div>'
+    +'<div class="legend">'+parts.map(x=>'<span><i style="background:var('+x[2]+')"></i>'+x[0]+' '+nis(x[1])+'</span>').join("")+'</div>'; }
+  if(B.note) h+='<p class="note" style="margin:10px 0 0">'+esc(B.note)+'</p>';
+  if(f.scope==="abroad"){
+    const to=(d.nearestAirport||d.city||f.dest);
+    const ages=Array.from({length:f.kids},(_,i)=>{ const a=(f.kidAges||[])[i]; return (a>=0&&a<18)?a:8; });
+    const fl=[];
+    if(/^[A-Za-z]{3}$/.test(d.nearestAirport||"")) fl.push(["טיסות ב-Skyscanner","https://www.skyscanner.co.il/transport/flights/tlv/"+d.nearestAirport.toLowerCase()+"/"+f.from.slice(2).replace(/-/g,"")+"/"+f.to.slice(2).replace(/-/g,"")+"/?adultsv2="+f.adults+(ages.length?"&childrenv2="+ages.join("%7C"):"")+"&cabinclass=economy",true]);
+    fl.push(["Google Flights","https://www.google.com/travel/flights?q="+enc("Flights from TLV to "+to+" on "+f.from+" through "+f.to)+"&hl=iw&curr=ILS"]);
+    h+='<div class="links-label">טיסות מתל אביב, הלוך '+esc(niceDate(f.from))+' וחזור '+esc(niceDate(f.to))+'. ב-Skyscanner גם מספר הנוסעים ממולא; ב-Google יש להוסיף נוסעים.</div>'+linksHTML(fl);
+  }
+  h+='</div>';
+
+  // weather
+  const W=p.weather;
+  if(W&&(W.summary||W.dayTemp)){
+    h+='<div class="panel sec"><h3>מזג האוויר הצפוי <small>ממוצע לעונה, לא תחזית</small></h3>'
+      +'<div class="wx">'+(W.dayTemp?'<div><span class="eyebrow-s">ביום</span><b>'+esc(W.dayTemp)+'</b></div>':'')
+      +(W.nightTemp?'<div><span class="eyebrow-s">בלילה</span><b>'+esc(W.nightTemp)+'</b></div>':'')
+      +(W.rain?'<div><span class="eyebrow-s">גשם</span><span>'+esc(W.rain)+'</span></div>':'')+'</div>'
+      +(W.summary?'<p style="margin:10px 0 0">'+esc(W.summary)+'</p>':'')
+      +(W.notes?'<p class="note" style="margin:4px 0 0">'+esc(W.notes)+'</p>':'')
+      +'<p class="note" style="margin:6px 0 0">קרוב ליציאה כדאי לבדוק תחזית עדכנית.</p></div>';
+  }
+
+  // transport A-Z
+  const T=(p.transport||[]).filter(x=>x&&(x.from||x.to));
+  if(T.length){
+    const car='<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/>';
+    const MI={"רכבת":'<rect x="6" y="3" width="12" height="13" rx="3"/><path d="M6 10h12M9 20l-2 2M15 20l2 2M9 13h.01M15 13h.01"/>',"אוטובוס":'<rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 10h16M7 20v-3M17 20v-3"/>',"טיסה":'<path d="M3 13l18-6-6 14-3-6z"/>',"מונית":car,"העברה":car,"רכב":car,"מעבורת":'<path d="M3 17c3 2 6 2 9 0s6-2 9 0M5 14l1-6h12l1 6M12 4v4"/>',"הליכה":'<circle cx="12" cy="4" r="2"/><path d="M10 22l2-7 3 3v4M8 12l4-4 3 3 3 1"/>'};
+    h+='<div class="sec"><h3>איך מגיעים ונוסעים <small>כל הנסיעות מהבית ועד החזרה, עם מחיר משוער</small></h3><ol class="legs">'
+      +T.map(x=>{ const a=x.fromEn||x.from, b=x.toEn||x.to;
+        const L=[["כל האפשרויות והמחירים","https://www.rome2rio.com/map/"+enc(a)+"/"+enc(b),true],["תחבורה ציבורית במפה","https://www.google.com/maps/dir/?"+new URLSearchParams({api:"1",origin:a,destination:b,travelmode:/רכב|מונית|העברה/.test(x.mode||"")?"driving":"transit"}).toString()]];
+        if(x.operator && /רכבת|אוטובוס|מעבורת/.test(x.mode||"")) L.push(["כרטיסים – "+x.operator,"https://www.google.com/search?q="+enc(x.operator+" tickets "+a+" "+b)]);
+        return '<li><div class="leg-mode" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24">'+(MI[x.mode]||'<path d="M5 12h14M13 6l6 6-6 6"/>')+'</svg></div><div class="leg-main"><div class="leg-top"><b>'+esc(x.from||"")+' ← '+esc(x.to||"")+'</b>'+(x.price?'<span class="leg-price">'+esc(x.price)+'</span>':'')+'</div>'
+          +'<div class="note">'+[x.date&&/^\d{4}-/.test(x.date)?niceDate(x.date):"",x.mode,x.operator,x.duration].filter(Boolean).map(esc).join(" · ")+'</div>'
+          +(x.cheaperAlt?'<div class="leg-alt">חלופה זולה: '+esc(x.cheaperAlt)+'</div>':'')+(x.tip?'<div class="note">'+esc(x.tip)+'</div>':'')+linksHTML(L)+'</div></li>'; }).join("")
+      +'</ol><p class="note" style="margin:10px 0 0">ב-Rome2Rio רואים את כל דרכי ההגעה בין שני המקומות עם טווח מחירים. המחיר הסופי – באתר החברה.</p></div>';
+  }
+
+  // lodging
+  if(p.lodging?.length){
+    h+='<div class="sec"><h3>איפה לישון <small>Booking ו-Airbnb נפתחים עם העיר, התאריכים והנוסעים שלכם</small></h3>'
+     +'<div class="panel" style="padding:14px 16px;margin-bottom:14px"><b>כל הלינות ב'+esc(d.city||f.dest)+'</b> · '+esc(niceDate(f.from))+' עד '+esc(niceDate(f.to))+' · '+f.adults+' מבוגרים'+(f.kids?', '+f.kids+' ילדים':'')+linksHTML(stayLinks(areaOf(d,f),f))
+     +'<p class="note" style="margin:8px 0 0">אם האתר נפתח בלי הפרטים (למשל באפליקציה בטלפון), הזינו: '+esc(areaOf(d,f))+' · '+esc(f.from.split("-").reverse().join("."))+'–'+esc(f.to.split("-").reverse().join("."))+' · '+f.adults+' מבוגרים'+(f.kids?', '+f.kids+' ילדים (גילאים '+esc((f.kidAges||[]).join(", "))+')':'')+'</p></div><div class="cards">'
+     + p.lodging.map((l,li)=>'<div class="card'+pc("lodging",li)+'">'+pb("lodging",li)+'<span class="kind">'+esc(l.type||"")+' · '+esc(l.area||"")+'</span><h4>'+esc(l.name)+'</h4><p>'+esc(l.why||"")+'</p>'
+       +(l.pricePerNight?'<p class="price">'+esc(l.pricePerNight)+' ללילה (הערכה)</p>':'')
+       +'<div class="tags">'+(l.nearSynagogue?'<span class="tag ok">ליד בית כנסת</span>':'')+(l.familyFriendly?'<span class="tag ok">מתאים למשפחות</span>':'')+'</div>'
+       +(l.checkin&&l.checkout&&/^\d{4}-\d{2}-\d{2}$/.test(l.checkin)&&/^\d{4}-\d{2}-\d{2}$/.test(l.checkout)&&(l.checkin!==f.from||l.checkout!==f.to)?'<p class="stay-dates">לילות: '+esc(niceDate(l.checkin))+' עד '+esc(niceDate(l.checkout))+'</p>':'')
+       + linksHTML([...stayLinks(l.bookingCity||areaOf(d,f), {...f, from:(/^\d{4}-\d{2}-\d{2}$/.test(l.checkin||"")?l.checkin:f.from), to:(/^\d{4}-\d{2}-\d{2}$/.test(l.checkout||"")?l.checkout:f.to)}), ["המקום במפה", mapLink(l.mapQuery||l.bookingArea||(l.name+" "+(l.area||"")))]]) +'</div>').join("")
+     +'</div></div>';
+  }
+
+  // days
+  if(p.days?.length){
+    h+='<div class="sec"><h3>מסלול יומי <small>לכל יום יש מסלול בגוגל מפות, ולכל עצירה ניווט ב-Waze</small></h3><div class="days">'+p.days.map(day=>{
+      const dow=day.date?parseISO(day.date).getDay():-1;
+      const sh=f.shabbat && day.date ? shabbatInfo(day.date,d) : null;
+      return '<article class="day'+(dow===6?' shabbat':'')+'"><div class="day-head"><h4>'+esc(day.title||"")+'</h4><span class="d">'+(day.date?esc(niceDate(day.date)):"")+(day.base?' · לינה: '+esc(day.base):'')+'</span></div>'
+        +(sh?'<div class="shabbat-times"><span>'+sh.label+': <b>'+sh.time+'</b></span><span>שקיעה: <b>'+sh.sunset+'</b></span><span class="note">חישוב משוער'+(sh.kind==="candle"?' ('+sh.before+' דק׳ לפני השקיעה)':'')+'. יש לבדוק בלוח המקומי.</span></div>':'')
+        +'<ol class="items">'+(day.items||[]).map(it=>'<li><span class="time">'+esc(it.time||"")+'</span><div><div class="it-name"><span class="k k-'+esc(it.kind||"rest")+'"></span>'+esc(it.name||"")+'</div><div class="it-desc">'+esc(it.desc||"")+'</div></div><div class="it-meta">'+(it.cost?'<span>'+esc(it.cost)+'</span>':'')+(it.mapQuery&&dow!==6?'<span class="nav-l"><a href="'+esc(wazeLink(it.mapQuery))+'" target="_blank" rel="noopener">Waze</a><a href="'+esc(mapLink(it.mapQuery))+'" target="_blank" rel="noopener">מפה</a></span>':'')+'</div></li>').join("")+'</ol>'
+        +(dayRoute(day)&&dow!==6?'<div class="day-foot">'+linksHTML([["מסלול היום בגוגל מפות",dayRoute(day)]])+'</div>':'')+'</article>';
+    }).join("")+'</div></div>';
+  }
+
+  // car rental
+  const C=p.carRental;
+  if(f.rent || f.scope==="abroad" || (C&&C.recommended)){
+    h+='<div class="sec"><h3>השכרת רכב <small>'+esc(niceDate(f.from))+' עד '+esc(niceDate(f.to))+'</small></h3><div class="panel" style="display:flex;flex-direction:column;gap:6px">'
+      +(f.rent&&f.rentMode!=="part"?'<div class="tag ok" style="align-self:flex-start">לכל הטיול – איסוף והחזרה בשדה התעופה</div>':'')
+      +(C&&C.pickup?'<div><b>איסוף:</b> '+esc(C.pickup)+'</div>':'')
+      +(C&&C.carType?'<div><b>רכב מתאים:</b> '+esc(C.carType)+'</div>':'')
+      +(C&&(C.pricePerDay||C.total)?'<div class="price"><b>מחיר משוער:</b> '+esc(C.pricePerDay||"")+(C.pricePerDay?' ליום':'')+(C.total?' · סה"כ '+esc(C.total):'')+' (הערכה)</div>':'')
+      +(C&&C.tips&&C.tips.filter(Boolean).length?'<ul class="plain">'+C.tips.filter(Boolean).map(t=>'<li>'+esc(t)+'</li>').join("")+'</ul>':'')
+      +(()=>{ const L=carLinks(C,d,f); return '<div class="links-label">ב-Kayak נפתחים התאריכים ואיסוף משדה התעופה ('+esc(L.code)+')</div>'+linksHTML(L.main)+'<div class="links-label">עוד חברות (יש להזין מקום ותאריכים באתר)</div>'+linksHTML(L.more); })()
+      +'</div></div>';
+  }
+
+  // shopping
+  const S=(p.shopping||[]).filter(x=>x&&x.name);
+  if(S.length){
+    const lvl={"זול":"cheap","בינוני":"mid","יקר":"pricey"};
+    h+='<div class="sec"><h3>קניות <small>רמת המחירים היא הערכה כללית</small></h3><div class="cards">'
+      +S.map((x,xi)=>'<div class="card'+pc("shopping",xi)+'">'+pb("shopping",xi)+'<span class="kind">'+esc(x.type||"")+' · '+esc(x.area||"")+'</span><h4>'+esc(x.name)+'</h4>'
+        +(x.priceLevel?'<div><span class="lvl lvl-'+(lvl[x.priceLevel]||"mid")+'">'+esc(x.priceLevel)+'</span></div>':'')
+        +(x.whatGood?'<p><b>כדאי לקנות:</b> '+esc(x.whatGood)+'</p>':'')
+        +(x.priceNote?'<p class="note">'+esc(x.priceNote)+'</p>':'')
+        +(x.tips?'<p class="note">'+esc(x.tips)+'</p>':'')
+        +linksHTML([["מפה",mapLink(x.mapQuery||x.name+" "+(x.area||""))],["חנויות ושעות",'https://www.google.com/search?q='+enc((x.mapQuery||x.name)+" stores opening hours")]])+'</div>').join("")
+      +'</div>'+((p.shoppingTips||[]).filter(Boolean).length?'<div class="panel" style="margin-top:12px"><b>טיפים לקניות</b><ul class="plain" style="margin-top:6px">'+p.shoppingTips.filter(Boolean).map(t=>'<li>'+esc(t)+'</li>').join("")+'</ul></div>':'')+'</div>';
+  }
+
+  // on the way
+  if(p.onTheWay?.length){
+    h+='<div class="sec"><h3>שווה לעצור בדרך</h3><div class="cards">'+p.onTheWay.map((o,oi)=>'<div class="card'+pc("onTheWay",oi)+'">'+pb("onTheWay",oi)+'<span class="kind">'+esc(o.where||"")+'</span><h4>'+esc(o.name)+'</h4><p>'+esc(o.desc||"")+'</p>'+(o.price?'<p class="price">'+esc(o.price)+'</p>':'')+linksHTML([["מפה",mapLink(o.mapQuery||o.name)]])+'</div>').join("")+'</div></div>';
+  }
+
+  // holy sites
+  const HS=(p.holySites||[]).filter(x=>x&&x.name);
+  if(HS.length){
+    h+='<div class="sec"><h3>קברי צדיקים ומקומות קדושים</h3><div class="cards">'+HS.map((x,xi)=>'<div class="card'+pc("holySites",xi)+'">'+pb("holySites",xi)+'<span class="kind">'+esc(x.area||"")+'</span><h4>'+esc(x.name)+'</h4>'+(x.tzadik?'<p>'+esc(x.tzadik)+'</p>':'')+(x.price?'<p class="price">'+esc(x.price)+'</p>':'')+(x.note?'<p class="note">'+esc(x.note)+'</p>':'')+linksHTML([["Waze",wazeLink(x.mapQuery||x.name)],["מפה",mapLink(x.mapQuery||x.name+" "+(x.area||""))]])+'</div>').join("")+'</div><p class="note" style="margin:10px 0 0">כדאי לבדוק שעות פתיחה וסדרי ביקור לפני ההגעה.</p></div>';
+  }
+
+  // food + shuls
+  h+='<div class="two">';
+  if(p.food?.length) h+='<div class="sec"><h3>אוכל כשר</h3><div class="list">'+p.food.map((x,xi)=>'<div class="card'+pc("food",xi)+'">'+pb("food",xi)+'<span class="kind">'+esc(x.kind||"")+' · '+esc(x.area||"")+'</span><h4>'+esc(x.name)+'</h4>'+(x.priceRange?'<p class="price">'+esc(x.priceRange)+'</p>':'')+(x.note?'<p>'+esc(x.note)+'</p>':'')+linksHTML([["מפה",mapLink(x.mapQuery||x.name+" "+(x.area||""))]])+'</div>').join("")+'</div><p class="note">יש לוודא את הכשרות והשעות מול המקום.</p></div>';
+  if(p.synagogues?.length) h+='<div class="sec"><h3>בתי כנסת</h3><div class="list">'+p.synagogues.map((x,xi)=>'<div class="card'+pc("synagogues",xi)+'">'+pb("synagogues",xi)+'<span class="kind">'+esc(x.area||"")+'</span><h4>'+esc(x.name)+'</h4>'+(x.note?'<p>'+esc(x.note)+'</p>':'')+linksHTML([["מפה",mapLink(x.mapQuery||x.name+" "+(x.area||""))]])+'</div>').join("")+'</div></div>';
+  h+='</div>';
+
+  h+='<div class="two">';
+  if(p.saving?.length) h+='<div class="panel sec"><h3>איך לחסוך</h3><ul class="plain">'+p.saving.map(s=>'<li>'+esc(s)+'</li>').join("")+'</ul></div>';
+  if(p.tips?.length||p.verify?.length) h+='<div class="panel sec"><h3>לפני שיוצאים</h3><ul class="plain">'+[...(p.verify||[]),...(p.tips||[])].map(s=>'<li>'+esc(s)+'</li>').join("")+'</ul></div>';
+  h+='</div>';
+
+  // shabbat plan
+  const SP=p.shabbatPlan;
+  if(SP&&(SP.where||SP.meals||(SP.buy||[]).length)){
+    h+='<div class="sec"><h3>השבת בטיול</h3><div class="two">'
+      +'<div>'+(SP.where?'<p style="margin:0 0 6px"><b>איפה:</b> '+esc(SP.where)+'</p>':'')+(SP.meals?'<p style="margin:0"><b>סעודות:</b> '+esc(SP.meals)+'</p>':'')+'</div>'
+      +'<div>'+((SP.buy||[]).filter(Boolean).length?'<b>לקנות מראש</b><ul class="plain" style="margin-top:4px">'+SP.buy.filter(Boolean).map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':'')
+      +((SP.prep||[]).filter(Boolean).length?'<b style="display:block;margin-top:8px">להכין לפני שבת</b><ul class="plain" style="margin-top:4px">'+SP.prep.filter(Boolean).map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':'')+'</div></div></div>';
+  }
+
+  // pre-trip timeline
+  const PT=(p.preTrip||[]).filter(x=>x&&x.task);
+  if(PT.length){
+    current.prepDone=current.prepDone||{};
+    h+='<div class="sec"><h3>הכנות לפני הטיול <small>מה לעשות ומתי, לפי הסדר</small></h3><ol class="prep">'
+      +PT.map((x,i)=>'<li><label class="pk"><input type="checkbox" data-prep="'+i+'"'+(current.prepDone[i]?' checked':'')+'><span><span class="when">'+esc(x.when||"")+'</span> '+esc(x.task)+(x.why?'<small class="note"> – '+esc(x.why)+'</small>':'')+'</span></label></li>').join("")+'</ol></div>';
+  }
+
+  // practical info
+  const PR=(p.practical||[]).filter(x=>x&&x.topic);
+  if(PR.length){
+    h+='<div class="sec"><h3>מידע מעשי ליעד</h3><dl class="practical">'+PR.map(x=>'<div><dt>'+esc(x.topic)+'</dt><dd>'+esc(x.info||"")+'</dd></div>').join("")+'</dl></div>';
+  }
+
+  // discounts
+  const DC=(p.discounts||[]).filter(x=>x&&x.name);
+  if(DC.length){
+    h+='<div class="panel sec"><h3>הנחות והטבות שכדאי לבדוק</h3><ul class="plain">'+DC.map(x=>'<li><b>'+esc(x.name)+'</b>'+(x.how?' – '+esc(x.how):'')+'</li>').join("")+'</ul></div>';
+  }
+
+  // expenses
+  if(!current.example){
+    h+='<div class="panel sec" id="expSec"><h3>הוצאות בטיול <small>רושמים כל הוצאה ורואים מול התקציב</small></h3><div id="expBody"></div></div>';
+  }
+
+  // packing
+  if(p.packing?.length){
+    current.packed=current.packed||{};
+    const cats=p.packing.filter(c=>c&&(c.items||[]).filter(Boolean).length);
+    const totalItems=cats.reduce((a,c)=>a+c.items.filter(Boolean).length,0);
+    const done=Object.values(current.packed).filter(Boolean).length;
+    h+='<div class="panel sec"><h3>מה לארוז <small id="packCount">'+done+' מתוך '+totalItems+' ארוזים</small></h3><div class="pack">'
+      +cats.map((c,ci)=>'<div><h5>'+esc(c.category)+'</h5>'+c.items.filter(Boolean).map((it,ii)=>{ const k=ci+"-"+ii; return '<label class="pk"><input type="checkbox" data-pk="'+k+'"'+(current.packed[k]?' checked':'')+'>'+esc(it)+'</label>'; }).join("")+'</div>').join("")
+      +'</div>'+(current.example?'':'<p class="note" style="margin:8px 0 0">הסימונים נשמרים בטיול השמור.</p>')+'</div>';
+  }
+
+  h+='<p class="disclaimer">ההמלצות והמחירים הם הערכה שנוצרה בעזרת בינה מלאכותית ועשויים להשתנות. המחיר הקובע הוא זה שמופיע באתר ההזמנה. יש לוודא כשרות, שעות פתיחה וזמני שבת לפני היציאה.</p>';
+
+  $("#result").innerHTML='<div class="plan-layout"><nav class="toc" id="toc" aria-label="ניווט בתוכנית"></nav><div class="plan-body">'+h+'</div></div>';
+  decorate($("#result")); buildToc();
+  document.querySelectorAll("[data-prep]").forEach(cb=>cb.onchange=()=>{ current.prepDone[cb.dataset.prep]=cb.checked; autosave(); });
+  document.querySelectorAll("[data-pk]").forEach(cb=>cb.onchange=()=>{
+    current.packed[cb.dataset.pk]=cb.checked;
+    const all=document.querySelectorAll("[data-pk]").length, n=document.querySelectorAll("[data-pk]:checked").length;
+    const el=$("#packCount"); if(el) el.textContent=n+" מתוך "+all+" ארוזים"; autosave();
+  });
+  $("#driveBtn").onclick=()=>openDrive();
+  $("#sumBtn").onclick=openSummary; updatePickCount();
+  document.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>togglePick(b));
+  $("#copyBtn").onclick=copyPlan;
+  caps.then(()=>{ if(downloads){ $("#dlBtn").hidden=false; $("#icsBtn").hidden=false; $("#dlBtn").onclick=downloadPrintable; $("#icsBtn").onclick=downloadICS; } });
+  if(!current.example){
+    $("#saveBtn").onclick=saveTrip;
+    renderExpenses();
+    $("#refineBtn").onclick=()=>{ const v=$("#refineIn").value.trim(); if(v) runPlan(current.form,current.plan,v); };
+  }
+}
+
+/* ---------- picking items ---------- */
+function isPicked(cat,i){ return !!(current&&current.picked&&current.picked[cat]&&current.picked[cat][i]); }
+function pc(cat,i){ return isPicked(cat,i)?' picked':''; }
+function pb(cat,i){ const on=isPicked(cat,i); return '<button type="button" class="pick" data-pick="'+cat+':'+i+'" aria-pressed="'+on+'">'+(on?'✓ נבחר':'בחירה')+'</button>'; }
+function togglePick(btn){
+  const [cat,i]=btn.dataset.pick.split(":"); current.picked=current.picked||{}; current.picked[cat]=current.picked[cat]||{};
+  const on=!current.picked[cat][i]; current.picked[cat][i]=on; if(!on) delete current.picked[cat][i];
+  btn.setAttribute("aria-pressed",on); btn.textContent=on?"✓ נבחר":"בחירה"; btn.closest(".card")?.classList.toggle("picked",on);
+  updatePickCount(); autosave();
+}
+function pickCount(){ return Object.values(current?.picked||{}).reduce((a,o)=>a+Object.keys(o).length,0); }
+function updatePickCount(){ const el=$("#sumCount"); if(el) el.textContent=pickCount()?" ("+pickCount()+" נבחרו)":""; }
+
+/* ---------- navigation links ---------- */
+const wazeLink=q=>"https://waze.com/ul?q="+enc(q)+"&navigate=yes";
+function dayRoute(day){
+  const stops=(day.items||[]).map(i=>i.mapQuery).filter(Boolean);
+  if(stops.length<2) return "";
+  const u=new URLSearchParams({api:"1",origin:stops[0],destination:stops[stops.length-1],travelmode:"driving"});
+  if(stops.length>2) u.set("waypoints",stops.slice(1,-1).slice(0,8).join("|"));
+  return "https://www.google.com/maps/dir/?"+u.toString();
+}
+
+/* ---------- WhatsApp ---------- */
+function waLink(){
+  const {form:f,plan:p}=current;
+  let t="*"+(p.title||f.dest)+"*\n"+niceDate(f.from)+" עד "+niceDate(f.to)+"\n";
+  (p.days||[]).forEach(d=>{ t+="\n*"+(d.date?niceDate(d.date):"")+"* – "+(d.title||"")+"\n"; (d.items||[]).forEach(i=>{ t+=(i.time||"")+" "+(i.name||"")+"\n"; }); });
+  if(p.lodging?.[0]) t+="\nלינה: "+p.lodging[0].name+" ("+(p.lodging[0].area||"")+")\n";
+  t+="\nתוכנן ב'דרך צלחה'";
+  return "https://wa.me/?text="+enc(t.slice(0,3500));
+}
+
+/* ---------- drive mode ---------- */
+function todayIndex(){ const t=iso(new Date()); const i=(current.plan.days||[]).findIndex(d=>d.date===t); return i<0?0:i; }
+function openDrive(i){
+  const days=current.plan.days||[]; if(!days.length) return;
+  if(i==null) i=todayIndex(); i=Math.max(0,Math.min(days.length-1,i));
+  const day=days[i], d=current.plan.destination||{}, dow=day.date?parseISO(day.date).getDay():-1;
+  const sh=current.form.shabbat&&day.date?shabbatInfo(day.date,d):null;
+  let o=document.getElementById("drive"); if(!o){ o=document.createElement("div"); o.id="drive"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true"); o.setAttribute("aria-label","מצב בטיול"); document.body.append(o); }
+  o.innerHTML='<div class="drive-in"><div class="drive-top"><button class="btn ghost small" id="dPrev" type="button"'+(i===0?' disabled':'')+'>→ יום קודם</button><div class="drive-title"><b>'+esc(day.title||"")+'</b><span>'+(day.date?esc(niceDate(day.date)):"")+'</span></div><button class="btn ghost small" id="dNext" type="button"'+(i===days.length-1?' disabled':'')+'>יום הבא ←</button></div>'
+    +(sh?'<div class="drive-shabbat">'+sh.label+' <b>'+sh.time+'</b></div>':'')
+    +'<ol class="drive-list">'+(day.items||[]).map(it=>'<li><span class="dt">'+esc(it.time||"")+'</span><div class="dn"><b>'+esc(it.name||"")+'</b><span>'+esc(it.desc||"")+'</span></div>'+(it.mapQuery&&dow!==6?'<a class="btn" href="'+esc(wazeLink(it.mapQuery))+'" target="_blank" rel="noopener">נווט</a>':'')+'</li>').join("")+'</ol>'
+    +'<button class="btn" id="dClose" type="button" style="width:100%">סגירה</button></div>';
+  o.hidden=false; document.body.style.overflow="hidden";
+  $("#dPrev").onclick=()=>openDrive(i-1); $("#dNext").onclick=()=>openDrive(i+1);
+  const close=()=>{ o.hidden=true; document.body.style.overflow=""; };
+  $("#dClose").onclick=close; o.onkeydown=e=>{ if(e.key==="Escape") close(); };
+  $("#dClose").focus();
+}
+
+/* ---------- downloads: printable page + calendar ---------- */
+async function saveFile(filename,data,okMsg){
+  try{ await downloads.save({filename,data}); setStatus("#saveStatus",okMsg); }
+  catch(e){ if(e?.code!=="declined") setStatus("#saveStatus","ההורדה לא הצליחה.",true); }
+}
+function chosenOr(cat,arr){
+  arr=(arr||[]).filter(x=>x&&x.name);
+  const pk=(current.picked||{})[cat]||{};
+  const ch=arr.filter((x,i)=>pk[i]);
+  return {list:ch.length?ch:arr, picked:ch.length>0};
+}
+function summaryBody(){
+  const {form:f,plan:p}=current, d=p.destination||{};
+  const li=a=>(a||[]).filter(Boolean).map(x=>"<li>"+esc(x)+"</li>").join("");
+  const a=(u,t)=>'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(t)+'</a>';
+  const tag=(o)=>o.picked?'<span class="s-tag">מה שבחרתם</span>':'<span class="s-tag s-gray">לא נבחר – כל ההמלצות</span>';
+  const B=p.budget||{};
+  let b='<header class="s-head"><h1>'+esc(p.title||f.dest)+'</h1><p>'+esc(niceDate(f.from))+' עד '+esc(niceDate(f.to))+' · '+daysBetween(f.from,f.to).length+' ימים · '+f.adults+' מבוגרים'+(f.kids?', '+f.kids+' ילדים'+(f.kidAges?.length?' ('+esc(f.kidAges.join(", "))+')':''):'')+(f.origin?' · יציאה מ'+esc(f.origin):'')+'</p>'+(f.outTime||f.backTime?'<p>'+(f.outTime?(f.scope==="abroad"?'טיסה הלוך: ':'יציאה: ')+esc(niceDate(f.from))+' בשעה '+esc(f.outTime):'')+(f.outTime&&f.backTime?' · ':'')+(f.backTime?(f.scope==="abroad"?'טיסה חזור: ':'חזרה: ')+esc(niceDate(f.to))+' בשעה '+esc(f.backTime):'')+'</p>':'')+(p.summary?'<p>'+esc(p.summary)+'</p>':'')+'</header>';
+  b+='<h2>תקציב משוער</h2><table>'+[["לינה",B.lodging],["אוכל",B.food],["אטרקציות",B.activities],["נסיעות",B.transport],["טיסות",B.flights]].filter(x=>Number(x[1])>0).map(x=>'<tr><td>'+x[0]+'</td><td class="n">'+nis(x[1])+'</td></tr>').join("")+'<tr class="tot"><td>סה"כ</td><td class="n">'+nis(B.total)+'</td></tr></table>'+(f.budget?'<p class="m">התקציב שלכם: '+nis(f.budget)+'</p>':'');
+  if(current.expenses?.length){ const sp=current.expenses.reduce((a,x)=>a+Number(x.amount||0),0); b+='<p class="m">הוצאתם עד עכשיו: '+nis(sp)+'</p>'; }
+  const T=(p.transport||[]).filter(x=>x&&(x.from||x.to));
+  if(T.length) b+='<h2>נסיעות והגעה</h2><table>'+T.map(x=>'<tr><td class="t">'+esc(x.date&&/^\d{4}-/.test(x.date)?niceDate(x.date):"")+'</td><td><b>'+esc(x.from||"")+' ← '+esc(x.to||"")+'</b><br>'+[x.mode,x.operator,x.duration].filter(Boolean).map(esc).join(" · ")+(x.cheaperAlt?'<br><i>חלופה זולה: '+esc(x.cheaperAlt)+'</i>':'')+'<br>'+a("https://www.rome2rio.com/map/"+enc(x.fromEn||x.from)+"/"+enc(x.toEn||x.to),"כל האפשרויות והמחירים")+'</td><td class="n">'+esc(x.price||"")+'</td></tr>').join("")+'</table>';
+  const L=chosenOr("lodging",p.lodging);
+  if(L.list.length) b+='<h2>לינה '+tag(L)+'</h2>'+L.list.map(l=>{ const fr=/^\d{4}-/.test(l.checkin||"")?l.checkin:f.from, to=/^\d{4}-/.test(l.checkout||"")?l.checkout:f.to; const sl=stayLinks(l.bookingCity||areaOf(d,f),{...f,from:fr,to}); return '<div class="s-item"><b>'+esc(l.name)+'</b> – '+esc(l.type||"")+', '+esc(l.area||"")+'<br>'+esc(niceDate(fr))+' עד '+esc(niceDate(to))+(l.pricePerNight?' · '+esc(l.pricePerNight)+' ללילה':'')+(l.why?'<br><span class="m">'+esc(l.why)+'</span>':'')+'<br>'+sl.map(x=>a(x[1],x[0])).join(" · ")+'</div>'; }).join("");
+  const C=p.carRental;
+  if(f.rent&&C) b+='<h2>השכרת רכב</h2><div class="s-item">'+(f.rentMode!=="part"?'<b>לכל הטיול – איסוף והחזרה בשדה התעופה</b><br>':'')+(C.pickup?'איסוף: '+esc(C.pickup)+'<br>':'')+(C.carType?'רכב: '+esc(C.carType)+'<br>':'')+(C.pricePerDay?'מחיר משוער: '+esc(C.pricePerDay)+' ליום'+(C.total?' · סה"כ '+esc(C.total):'')+'<br>':'')+(()=>{ const K=carLinks(C,d,f); return K.main.map(x=>a(x[1],x[0])).join(" · "); })()+'</div>';
+  b+='<h2>המסלול יום אחרי יום</h2>';
+  (p.days||[]).forEach(day=>{ const sh=f.shabbat&&day.date?shabbatInfo(day.date,d):null;
+    b+='<h3>'+(day.date?esc(niceDate(day.date))+' – ':'')+esc(day.title||"")+(day.base?' <span class="m">(לינה: '+esc(day.base)+')</span>':'')+'</h3>'+(sh?'<p class="sh">'+sh.label+': '+sh.time+' (משוער)</p>':'')+'<table>'+(day.items||[]).map(i=>'<tr><td class="t">'+esc(i.time||"")+'</td><td><b>'+esc(i.name||"")+'</b>'+(i.desc?'<br>'+esc(i.desc):'')+'</td><td class="n">'+esc(i.cost||"")+'</td></tr>').join("")+'</table>'; });
+  const sec=(cat,arr,title,fn)=>{ const o=chosenOr(cat,arr); if(o.list.length) b+='<h2>'+title+' '+tag(o)+'</h2><ul>'+o.list.map(fn).join("")+'</ul>'; };
+  sec("holySites",p.holySites,"קברי צדיקים ומקומות קדושים",x=>'<li><b>'+esc(x.name)+'</b>'+(x.area?' – '+esc(x.area):'')+(x.price?' · '+esc(x.price):'')+(x.note?'<br><span class="m">'+esc(x.note)+'</span>':'')+' '+a(wazeLink(x.mapQuery||x.name),"Waze")+'</li>');
+  sec("onTheWay",p.onTheWay,"עצירות בדרך",x=>'<li><b>'+esc(x.name)+'</b>'+(x.where?' – '+esc(x.where):'')+(x.price?' · '+esc(x.price):'')+' '+a(wazeLink(x.mapQuery||x.name),"Waze")+'</li>');
+  sec("food",p.food,"אוכל כשר",x=>'<li><b>'+esc(x.name)+'</b> – '+esc(x.kind||"")+', '+esc(x.area||"")+(x.priceRange?' · '+esc(x.priceRange):'')+' '+a(mapLink(x.mapQuery||x.name),"מפה")+'</li>');
+  sec("synagogues",p.synagogues,"בתי כנסת",x=>'<li><b>'+esc(x.name)+'</b> – '+esc(x.area||"")+' '+a(mapLink(x.mapQuery||x.name),"מפה")+'</li>');
+  if(f.shop) sec("shopping",p.shopping,"קניות",x=>'<li><b>'+esc(x.name)+'</b> – '+esc(x.area||"")+(x.priceLevel?' · '+esc(x.priceLevel):'')+(x.whatGood?'<br><span class="m">'+esc(x.whatGood)+'</span>':'')+'</li>');
+  const SP=p.shabbatPlan; if(f.shabbat&&SP&&(SP.where||SP.meals)) b+='<h2>השבת</h2><p>'+(SP.where?'<b>איפה:</b> '+esc(SP.where)+'<br>':'')+(SP.meals?'<b>סעודות:</b> '+esc(SP.meals):'')+'</p>'+((SP.buy||[]).length?'<b>לקנות מראש:</b><ul class="ck">'+li(SP.buy)+'</ul>':'')+((SP.prep||[]).length?'<b>להכין:</b><ul class="ck">'+li(SP.prep)+'</ul>':'');
+  const W=p.weather; if(W&&(W.summary||W.dayTemp)) b+='<h2>מזג אוויר צפוי</h2><p>'+[W.dayTemp&&"ביום "+W.dayTemp,W.nightTemp&&"בלילה "+W.nightTemp,W.rain].filter(Boolean).map(esc).join(" · ")+(W.summary?'<br>'+esc(W.summary):'')+'</p>';
+  const PT=(p.preTrip||[]).filter(x=>x&&x.task); if(PT.length) b+='<h2>הכנות לפני הטיול</h2><ul class="ck">'+PT.map((x,i)=>'<li'+((current.prepDone||{})[i]?' class="done"':'')+'><b>'+esc(x.when||"")+'</b> '+esc(x.task)+'</li>').join("")+'</ul>';
+  const PR=(p.practical||[]).filter(x=>x&&x.topic); if(PR.length) b+='<h2>מידע מעשי</h2><table>'+PR.map(x=>'<tr><td class="k2"><b>'+esc(x.topic)+'</b></td><td>'+esc(x.info||"")+'</td></tr>').join("")+'</table>';
+  if(p.packing?.length) b+='<h2>מה לארוז</h2><div class="cols">'+p.packing.filter(c=>c&&(c.items||[]).length).map(c=>'<div><h3>'+esc(c.category)+'</h3><ul class="ck">'+li(c.items)+'</ul></div>').join("")+'</div>';
+  const DC=(p.discounts||[]).filter(x=>x&&x.name); if(DC.length) b+='<h2>הנחות לבדוק</h2><ul>'+DC.map(x=>'<li><b>'+esc(x.name)+'</b>'+(x.how?' – '+esc(x.how):'')+'</li>').join("")+'</ul>';
+  if(p.saving?.length) b+='<h2>איך לחסוך</h2><ul>'+li(p.saving)+'</ul>';
+  if(p.verify?.length||p.tips?.length) b+='<h2>לפני שיוצאים</h2><ul>'+li([...(p.verify||[]),...(p.tips||[])])+'</ul>';
+  b+='<p class="m foot">נוצר ב"דרך צלחה". המחירים הם הערכה בלבד – המחיר הקובע הוא באתר ההזמנה. יש לוודא כשרות, שעות וזמני שבת.</p>';
+  return b;
+}
+const SUM_CSS='body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:0 16px;color:#111;line-height:1.55}.s-head{border-bottom:3px solid #0d7a6f;padding-bottom:10px}h1{color:#0d7a6f;margin:0 0 4px}h2{border-bottom:2px solid #0d7a6f;padding-bottom:4px;margin-top:28px;font-size:19px}h3{font-size:15.5px;margin:16px 0 4px}.m{color:#555}table{width:100%;border-collapse:collapse}td{border-bottom:1px solid #ddd;padding:6px;vertical-align:top}.t{width:90px;color:#555}.n{white-space:nowrap;text-align:left}.k2{width:140px}.tot td{font-weight:bold;border-top:2px solid #333}.sh{color:#a06000;font-weight:bold;margin:2px 0}ul.ck{list-style:none;padding:0}ul.ck li:before{content:"☐ "}ul.ck li.done:before{content:"☑ "}.s-item{border:1px solid #ddd;border-radius:8px;padding:10px 12px;margin:8px 0}.s-tag{font-size:12px;font-weight:normal;background:#dff1ed;color:#0a5e56;border-radius:6px;padding:2px 8px;margin-inline-start:6px}.s-gray{background:#eee;color:#666}.cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px 20px}a{color:#0d7a6f}.foot{margin-top:28px;font-size:13px}@media print{h2{break-after:avoid}.s-item{break-inside:avoid}}';
+function openSummary(){
+  let o=document.getElementById("sumView"); if(!o){ o=document.createElement("div"); o.id="sumView"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true"); o.setAttribute("aria-label","דף סיכום הטיול"); document.body.append(o); }
+  o.innerHTML='<div class="sum-bar"><b>דף סיכום'+(pickCount()?' · '+pickCount()+' בחירות':'')+'</b><div class="actions"><button class="btn small" id="sumDl" type="button"'+(downloads?'':' hidden')+'>הורדה להדפסה</button><a class="btn ghost small" href="'+esc("https://wa.me/?text="+enc(summaryText().slice(0,3500)))+'" target="_blank" rel="noopener">וואטסאפ</a><button class="btn ghost small" id="sumClose" type="button">סגירה</button></div></div><div class="sum-paper"><style>'+SUM_CSS.replace(/@media print\{.*\}\}/,"").replace(/body\{/,"&{").replace(/(^|\})([^{}]+)\{/g,(m,x,sel)=>x+sel.split(",").map(t=>t.trim()==="&"?".sum-doc":".sum-doc "+t.trim()).join(",")+"{")+'</style><div class="sum-doc">'+summaryBody()+'</div></div>';
+  o.hidden=false; document.body.style.overflow="hidden"; o.scrollTop=0;
+  const close=()=>{ o.hidden=true; document.body.style.overflow=""; };
+  $("#sumClose").onclick=close; o.onkeydown=e=>{ if(e.key==="Escape") close(); };
+  const dl=$("#sumDl"); if(dl) dl.onclick=downloadPrintable;
+  $("#sumClose").focus();
+}
+function summaryText(){
+  const {form:f,plan:p}=current; let t="*"+(p.title||f.dest)+"*\n"+niceDate(f.from)+" עד "+niceDate(f.to)+"\n";
+  const L=chosenOr("lodging",p.lodging); if(L.list.length) t+="\nלינה: "+L.list.map(l=>l.name).join(", ")+"\n";
+  (p.days||[]).forEach(d=>{ t+="\n*"+(d.date?niceDate(d.date):"")+"* – "+(d.title||"")+"\n"; (d.items||[]).forEach(i=>{ t+=(i.time||"")+" "+(i.name||"")+"\n"; }); });
+  return t+"\nתוכנן ב'דרך צלחה'";
+}
+function downloadPrintable(){
+  const {form:f,plan:p}=current;
+  const html='<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(p.title||f.dest)+'</title><style>'+SUM_CSS+'</style></head><body>'+summaryBody()+'</body></html>';
+  saveFile((p.title||"tiyul").replace(/[^\w֐-׿ -]/g,"").trim()+".html",html,"הקובץ נשמר. פתחו אותו והדפיסו מהדפדפן.");
+}
+function icsDate(ms){ return new Date(ms).toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,""); }
+function icsEsc(t){ return String(t||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/[,;]/g,m=>"\\"+m); }
+function downloadICS(){
+  const {form:f,plan:p}=current, d=p.destination||{};
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//derech-tzlecha//HE","CALSCALE:GREGORIAN"];
+  (p.days||[]).forEach((day,i)=>{ if(!day.date) return;
+    const nd=parseISO(day.date); nd.setDate(nd.getDate()+1);
+    L.push("BEGIN:VEVENT","UID:day"+i+"-"+day.date+"@derech-tzlecha","DTSTAMP:"+icsDate(Date.now()),"DTSTART;VALUE=DATE:"+day.date.replace(/-/g,""),"DTEND;VALUE=DATE:"+iso(nd).replace(/-/g,""),
+      "SUMMARY:"+icsEsc((p.title||f.dest)+" – "+(day.title||"")),"DESCRIPTION:"+icsEsc((day.items||[]).map(x=>(x.time||"")+" "+(x.name||"")).join("\n")),"END:VEVENT");
+    if(f.shabbat && parseISO(day.date).getDay()===5 && typeof d.lat==="number"){
+      const ss=sunUT(day.date,d.lat,d.lng,90.833,false);
+      if(ss){ const isJ=/ירושלים|jerusalem/i.test((d.name||"")+(d.city||"")); const candle=ss-(isJ?40:18)*6e4;
+        L.push("BEGIN:VEVENT","UID:shabbat-"+day.date+"@derech-tzlecha","DTSTAMP:"+icsDate(Date.now()),"DTSTART:"+icsDate(candle),"DTEND:"+icsDate(candle+15*6e4),
+          "SUMMARY:"+icsEsc("הדלקת נרות (משוער) – "+(d.city||f.dest)),"DESCRIPTION:"+icsEsc("זמן משוער. יש לבדוק בלוח המקומי."),
+          "BEGIN:VALARM","TRIGGER:-PT3H","ACTION:DISPLAY","DESCRIPTION:"+icsEsc("עוד 3 שעות כניסת שבת"),"END:VALARM",
+          "BEGIN:VALARM","TRIGGER:-PT1H","ACTION:DISPLAY","DESCRIPTION:"+icsEsc("עוד שעה כניסת שבת"),"END:VALARM","END:VEVENT"); }
+    }
+  });
+  L.push("END:VCALENDAR");
+  saveFile("tiyul.ics",L.join("\r\n"),"קובץ היומן נשמר. פתחו אותו כדי להוסיף את הטיול ותזכורות שבת ליומן.");
+}
+
+/* ---------- expenses ---------- */
+const EXP_CATS=[["lodging","לינה","--c1"],["food","אוכל","--c2"],["activities","אטרקציות","--c3"],["transport","נסיעות","--c4"],["shopping","קניות","--c5"],["other","אחר","--c5"]];
+function renderExpenses(){
+  const box=$("#expBody"); if(!box) return;
+  const ex=current.expenses=current.expenses||[];
+  const B=current.plan.budget||{}, planned=Number(B.total)||current.form.budget||0;
+  const spent=ex.reduce((a,x)=>a+Number(x.amount||0),0);
+  const pct=planned?Math.min(100,spent/planned*100):0;
+  const byCat=EXP_CATS.map(([k,n,c])=>[k,n,c,ex.filter(x=>x.cat===k).reduce((a,x)=>a+Number(x.amount||0),0),Number(B[k])||0]).filter(x=>x[3]||x[4]);
+  box.innerHTML='<div class="budget-total" style="margin-bottom:8px"><span>הוצאתם <b style="font-size:24px">'+nis(spent)+'</b> מתוך '+nis(planned)+'</span>'+(planned?(spent>planned?'<span class="over">חריגה של '+nis(spent-planned)+'</span>':'<span class="under">נשארו '+nis(planned-spent)+'</span>'):'')+'</div>'
+    +'<div class="meter" role="img" aria-label="'+Math.round(pct)+' אחוז מהתקציב"><i style="width:'+pct.toFixed(1)+'%;background:var('+(spent>planned?'--warn':'--accent')+')"></i></div>'
+    +(byCat.length?'<div class="exp-cats">'+byCat.map(([k,n,c,sp,pl])=>'<div><span>'+n+'</span><b>'+nis(sp)+'</b>'+(pl?'<small> מתוך '+nis(pl)+'</small>':'')+'</div>').join("")+'</div>':'')
+    +'<form class="exp-form" id="expForm" autocomplete="off"><input type="text" id="expDesc" placeholder="על מה? למשל: גלידה" aria-label="תיאור ההוצאה"><input type="number" id="expAmt" min="0" step="1" placeholder="₪" aria-label="סכום בשקלים"><select id="expCat" aria-label="סוג ההוצאה">'+EXP_CATS.map(([k,n])=>'<option value="'+k+'">'+n+'</option>').join("")+'</select><button class="btn small" type="submit">הוספה</button></form>'
+    +(ex.length?'<ul class="exp-list">'+ex.slice().reverse().map(x=>'<li><span>'+esc(x.desc||"")+'<small> · '+esc((EXP_CATS.find(c=>c[0]===x.cat)||[])[1]||"")+' · '+esc(x.date||"")+'</small></span><b>'+nis(x.amount)+'</b><button type="button" class="x" data-ex="'+esc(x.id)+'" aria-label="מחיקת ההוצאה">✕</button></li>').join("")+'</ul>':'<p class="note" style="margin:10px 0 0">עוד לא נרשמו הוצאות.</p>')
+    +'<p class="note" style="margin:8px 0 0">'+(current.savedId?'ההוצאות נשמרות אוטומטית בטיול.':'כדי שההוצאות יישמרו, שמרו את הטיול.')+'</p>';
+  $("#expForm").onsubmit=e=>{ e.preventDefault(); const a=Number($("#expAmt").value); if(!(a>0)) return;
+    ex.push({id:Math.random().toString(36).slice(2,9),desc:$("#expDesc").value.trim(),amount:a,cat:$("#expCat").value,date:iso(new Date())}); renderExpenses(); autosave(); $("#expDesc").focus(); };
+  box.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{ current.expenses=ex.filter(x=>x.id!==b.dataset.ex); renderExpenses(); autosave(); });
+}
+let autoT=null;
+function autosave(){ if(!current.savedId||!db||!uid) return; clearTimeout(autoT); autoT=setTimeout(()=>{ db.collection("data/users/"+uid).doc(current.savedId).update({expenses:current.expenses||[],packed:current.packed||{},prepDone:current.prepDone||{},picked:current.picked||{}}).catch(()=>{}); },1200); }
+
+/* ---------- image shrink for tips ---------- */
+function shrinkImage(file){
+  return new Promise((res,rej)=>{ const img=new Image(); const url=URL.createObjectURL(file);
+    img.onload=()=>{ const m=1280, k=Math.min(1,m/Math.max(img.width,img.height)); const c=document.createElement("canvas"); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+      c.getContext("2d").drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url); c.toBlob(b=>b?res(b):rej(),"image/jpeg",0.82); };
+    img.onerror=()=>{ URL.revokeObjectURL(url); rej(); }; img.src=url; });
+}
+
+/* ---------- compare ---------- */
+$("#cmpForm").addEventListener("submit", async e=>{
+  e.preventDefault(); await caps;
+  if(!sample){ setStatus("#cmpStatus","ההשוואה זמינה כשפותחים את הדף בתוך Claude עם חשבון מחובר.",true); return; }
+  const dests=[$("#cmp1").value,$("#cmp2").value,$("#cmp3").value].map(x=>x.trim()).filter(Boolean);
+  if(dests.length<2){ setStatus("#cmpStatus","כתבו לפחות שני יעדים.",true); return; }
+  const kids=Math.max(0,parseInt($("#cKids").value)||0);
+  const f={...readForm(), from:$("#cFrom").value, to:$("#cTo").value, adults:Math.max(1,parseInt($("#cAdults").value)||1), kids,
+    kidAges:$("#cKidAges").value.split(/[,\s]+/).map(Number).filter(n=>n>=0&&n<18).slice(0,kids), origin:$("#cOrigin").value.trim(), budget:Math.max(0,parseInt($("#cBudget").value)||0)};
+  if(!f.from||!f.to||f.to<f.from){ setStatus("#cmpStatus","בדקו את התאריכים.",true); return; }
+  const n=daysBetween(f.from,f.to).length;
+  $("#cmpBtn").disabled=true; setStatus("#cmpStatus","");
+  $("#cmpResult").innerHTML='<div class="loading"><div class="spin"></div><b>משווה בין היעדים…</b></div>';
+  try{
+    const r=await sample.json(`אתה יועץ טיולים למשפחות שומרות תורה ומצוות. השווה בין היעדים: ${dests.join(" / ")}.
+טיול של ${n} ימים, ${f.from} עד ${f.to}, ${f.adults} מבוגרים ו-${f.kids} ילדים (גילאים ${f.kidAges.join(", ")||"לא צוין"}), יציאה מ${f.origin||"ישראל"}, תקציב ${f.budget?f.budget+" ₪":"לא נקבע"}, רמת לינה ${f.level}.
+חשוב: אוכל כשר, בית כנסת ושבת נוחה, התאמה לילדים, חיסכון. מחירים כהערכה בשקלים לכל המשפחה לכל הטיול (כולל טיסות אם בחו"ל). מזג אוויר: ממוצע לעונה. אל תמציא נתונים שאינך בטוח בהם.
+החזר JSON בלבד: {"rows":[{"dest":"","total":0,"lodgingNight":"","flights":"","weather":"","kosher":1,"shabbat":1,"kids":1,"travel":"זמן הגעה","pros":[""],"cons":[""]}],"recommendation":"2-3 משפטים איזה יעד מתאים הכי טוב ולמה"}
+kosher, shabbat, kids: ציון 1 עד 5. כתוב בעברית.`,{modelTier:"default"});
+    window.__cmpForm=f; renderCompare(r,dests);
+  }catch(err){ setStatus("#cmpStatus",{not_granted:"לא ניתן אישור לשימוש ב-Claude.",rate_limited:"יותר מדי בקשות. נסו בעוד כמה דקות."}[err?.code]||"ההשוואה לא הצליחה. נסו שוב.",true); $("#cmpResult").innerHTML='<div class="empty">נסו שוב.</div>'; }
+  finally{ $("#cmpBtn").disabled=false; }
+});
+function dots(n){ n=Math.max(0,Math.min(5,Math.round(Number(n)||0))); return '<span class="dots" aria-label="'+n+' מתוך 5">'+'●'.repeat(n)+'<span>'+'●'.repeat(5-n)+'</span></span>'; }
+function renderCompare(r){
+  const rows=(r?.rows||[]).filter(x=>x&&x.dest); if(!rows.length){ $("#cmpResult").innerHTML='<div class="empty">לא התקבלה השוואה. נסו שוב.</div>'; return; }
+  const min=Math.min(...rows.map(x=>Number(x.total)||Infinity));
+  const line=(label,fn)=>'<tr><th scope="row">'+label+'</th>'+rows.map(x=>'<td>'+fn(x)+'</td>').join("")+'</tr>';
+  const cf=window.__cmpForm||{};
+  let h='<div class="cmp-head"><span>'+esc(cf.from?niceDate(cf.from):"")+' עד '+esc(cf.to?niceDate(cf.to):"")+'</span><span>'+(cf.adults||0)+' מבוגרים'+(cf.kids?', '+cf.kids+' ילדים':'')+'</span>'+(cf.budget?'<span>תקציב '+nis(cf.budget)+'</span>':'')+'</div>'+(r.recommendation?'<div class="panel"><b>ההמלצה שלנו</b><p style="margin:6px 0 0">'+esc(r.recommendation)+'</p></div>':'')
+   +'<div class="panel" style="padding:0"><div class="tbl-wrap"><table class="cmp"><thead><tr><th></th>'+rows.map(x=>'<th scope="col">'+esc(x.dest)+'</th>').join("")+'</tr></thead><tbody>'
+   +line("עלות משוערת",x=>'<b>'+nis(x.total)+'</b>'+(Number(x.total)===min?' <span class="under">הכי זול</span>':''))
+   +line("לינה ללילה",x=>esc(x.lodgingNight||"–"))
+   +(rows.some(x=>x.flights)?line("טיסות",x=>esc(x.flights||"–")):"")
+   +line("זמן הגעה",x=>esc(x.travel||"–"))
+   +line("מזג אוויר",x=>esc(x.weather||"–"))
+   +line("אוכל כשר",x=>dots(x.kosher))+line("נוחות לשבת",x=>dots(x.shabbat))+line("לילדים",x=>dots(x.kids))
+   +line("יתרונות",x=>'<ul class="plain">'+(x.pros||[]).filter(Boolean).map(t=>'<li>'+esc(t)+'</li>').join("")+'</ul>')
+   +line("חסרונות",x=>'<ul class="plain">'+(x.cons||[]).filter(Boolean).map(t=>'<li>'+esc(t)+'</li>').join("")+'</ul>')
+   +line("",x=>'<button class="btn small" type="button" data-go="'+esc(x.dest)+'">תכננו טיול לכאן</button>')
+   +'</tbody></table></div></div><p class="note">הערכה כללית שנוצרה בעזרת בינה מלאכותית.</p>';
+  $("#cmpResult").innerHTML=h;
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{ $("#dest").value=b.dataset.go; location.hash="plan"; $("#dest").focus(); });
+}
+
+function planText(){
+  const {form:f,plan:p}=current; let t=(p.title||f.dest)+"\n"+niceDate(f.from)+" – "+niceDate(f.to)+"\n\n"+(p.summary||"")+"\n";
+  (p.days||[]).forEach(d=>{ t+="\n"+(d.date?niceDate(d.date):"")+" – "+(d.title||"")+"\n"; (d.items||[]).forEach(i=>{ t+="  "+(i.time||"")+" "+(i.name||"")+(i.cost?" ("+i.cost+")":"")+"\n"; }); });
+  if(p.lodging?.length){ t+="\nלינה:\n"; p.lodging.forEach(l=>t+="  "+l.name+" – "+(l.area||"")+" "+(l.pricePerNight||"")+"\n"); }
+  if(p.packing?.length){ t+="\nמה לארוז:\n"; p.packing.forEach(c=>{ t+="  "+c.category+": "+(c.items||[]).filter(Boolean).join(", ")+"\n"; }); }
+  return t;
+}
+async function copyPlan(){
+  const txt=planText();
+  try{ await navigator.clipboard.writeText(txt); setStatus("#saveStatus","הועתק."); }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=txt; ta.style.width="100%"; ta.rows=8; $("#saveStatus").replaceChildren(ta); ta.select(); }
+}
+
+/* ---------- saved trips (private per viewer) ---------- */
+async function saveTrip(){
+  await caps;
+  if(!db||!uid){ setStatus("#saveStatus","שמירה זמינה רק למשתמשים מחוברים.",true); return; }
+  const btn=$("#saveBtn"); btn.disabled=true;
+  try{
+    const col=db.collection("data/users/"+uid);
+    const ref=current.savedId?col.doc(current.savedId):col.doc();
+    await ref.set({form:current.form, plan:current.plan, packed:current.packed||{}, expenses:current.expenses||[], prepDone:current.prepDone||{}, picked:current.picked||{}, title:current.plan.title||current.form.dest, savedAt:new Date().toISOString()});
+    current.savedId=ref.id; setStatus("#saveStatus","נשמר בטיולים שלי."); btn.textContent="עדכון בטיולים שלי";
+  }catch(e){ setStatus("#saveStatus", e?.code==="quota_exceeded"?"אין מקום לעוד טיולים. מחקו טיול ישן.":"השמירה לא הצליחה.",true); }
+  finally{ btn.disabled=false; }
+}
+let tripsUnsub=null, tripsTimer=null;
+async function initTrips(){
+  await caps;
+  const box=$("#tripList");
+  if(!db||!uid){ box.innerHTML='<div class="empty">כדי לשמור טיולים צריך לפתוח את הדף כשאתם מחוברים ל-Claude.</div>'; return; }
+  tripsTimer=setTimeout(()=>{ if(box.querySelector(".empty")) box.innerHTML='<div class="empty">לא הצלחנו לטעון את הטיולים כרגע.</div>'; },10000);
+  tripsUnsub=db.collection("data/users/"+uid).orderBy("savedAt","desc").onSnapshot(snap=>{
+    if(!snap.metadata.fromCache) clearTimeout(tripsTimer);
+    if(snap.empty){ box.innerHTML='<div class="empty">עוד אין טיולים שמורים. תכננו טיול ולחצו "שמירה לטיולים שלי".</div>'; return; }
+    box.innerHTML=snap.docs.map(d=>{ const v=d.data(); const f=v.form||{}; return '<div class="trip-row"><div><h4>'+esc(v.title)+'</h4><div class="note">'+esc(f.from?niceDate(f.from)+" – "+niceDate(f.to):"")+' · '+((f.adults||0)+(f.kids||0))+' נוסעים · '+nis(v.plan?.budget?.total)+'</div></div><div class="actions"><button class="btn small" data-open="'+esc(d.id)+'" type="button">פתיחה</button><button class="btn danger small" data-del="'+esc(d.id)+'" type="button">מחיקה</button></div></div>'; }).join("");
+    box.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{ const doc=snap.docs.find(x=>x.id===b.dataset.open); const v=doc.data(); current={form:JSON.parse(JSON.stringify(v.form)),plan:JSON.parse(JSON.stringify(v.plan)),savedId:doc.id, packed:{...(v.packed||{})}, expenses:(v.expenses||[]).map(x=>({...x})), prepDone:{...(v.prepDone||{})}, picked:JSON.parse(JSON.stringify(v.picked||{}))}; fillForm(current.form); renderPlan(); location.hash="plan"; });
+    box.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{
+      if(b.dataset.armed!=="1"){ b.dataset.armed="1"; b.textContent="למחוק? לחצו שוב"; setTimeout(()=>{ b.dataset.armed=""; b.textContent="מחיקה"; },4000); return; }
+      b.disabled=true; try{ await db.collection("data/users/"+uid).doc(b.dataset.del).delete(); }catch(e){ b.disabled=false; }
+    });
+  }, ()=>{ clearTimeout(tripsTimer); box.innerHTML='<div class="empty">לא הצלחנו לטעון את הטיולים.</div>'; });
+}
+
+/* ---------- community tips ---------- */
+let myTipsDoc=null;
+async function initTips(){
+  await caps;
+  const list=$("#tipList");
+  if(!db){ list.innerHTML='<div class="empty">ההמלצות זמינות כשפותחים את הדף מחוברים ל-Claude.</div>'; $("#tipFormPanel").hidden=true; return; }
+  if(!uid || canWrite===false){ $("#tipForm").innerHTML='<p class="note">אפשר לקרוא המלצות. כדי להוסיף המלצה צריך הרשאת השתתפות בדף.</p>'; }
+  const timer=setTimeout(()=>{ if(list.querySelector(".empty")) list.innerHTML='<div class="empty">לא הצלחנו לטעון המלצות כרגע.</div>'; },10000);
+  db.collection("tips").onSnapshot(snap=>{
+    if(!snap.metadata.fromCache) clearTimeout(timer);
+    const all=[];
+    snap.docs.forEach(d=>{ const v=d.data()||{}; (v.items||[]).forEach(it=>all.push({...it, author:d.id})); if(d.id===uid) myTipsDoc=v; });
+    all.sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+    tipsCache=all; renderTips();
+  }, ()=>{ clearTimeout(timer); list.innerHTML='<div class="empty">לא הצלחנו לטעון המלצות.</div>'; });
+}
+async function renderTips(){
+  const q=$("#tipSearch").value.trim(), cat=$("#tipCatFilter").value;
+  const rows=tipsCache.filter(t=>(!cat||t.cat===cat)&&(!q||(t.place+" "+t.city+" "+t.country+" "+t.text).includes(q)));
+  const list=$("#tipList");
+  if(!tipsCache.length){ list.innerHTML='<div class="empty">עוד אין המלצות. היו הראשונים להמליץ על מקום לינה, אוכל כשר או מסלול שאהבתם.</div>'; return; }
+  if(!rows.length){ list.innerHTML='<div class="empty">לא נמצאו המלצות לחיפוש הזה.</div>'; return; }
+  let names={}; try{ if(user?.profiles) names=await user.profiles([...new Set(rows.map(r=>r.author))]); }catch(e){}
+  list.innerHTML=rows.map(t=>{
+    const mine=t.author===uid, mod=isOwner&&!mine;
+    return '<div class="tip"><div class="top-line"><b>'+esc(t.place)+'</b><span class="stars" aria-label="דירוג '+(t.rate||0)+'">'+"★".repeat(t.rate||0)+'</span></div>'
+      +'<div class="tags"><span class="tag ok">'+esc(t.cat)+'</span><span class="tag">'+esc(t.city)+(t.country?", "+esc(t.country):"")+'</span>'+(t.price?'<span class="tag">'+esc(t.price)+'</span>':'')+'</div>'
+      +'<p style="margin:2px 0">'+esc(t.text)+'</p>'
+      +(t.photo&&t.photo.url?'<img class="tip-img" src="'+esc(t.photo.url)+'" alt="'+esc(t.place)+'" loading="lazy">':'')
+      +(t.contact?'<div class="note">פרטים: <span style="user-select:all">'+esc(t.contact)+'</span></div>':'')
+      +'<div class="top-line note"><span>'+esc((names[t.author]&&names[t.author].name)||"מטייל")+' · '+esc(String(t.createdAt||"").slice(0,10))+'</span>'
+      +'<span class="actions">'+linksHTML([["מפה",mapLink(t.place+" "+t.city)]]).replace('class="links"','class="links" style="padding:0"')
+      +((mine||mod)?'<button class="btn danger small" data-rm="'+esc(t.author)+'|'+esc(t.id)+'" type="button">הסרה</button>':'')+'</span></div></div>';
+  }).join("");
+  list.querySelectorAll("[data-rm]").forEach(b=>b.onclick=async()=>{
+    if(b.dataset.armed!=="1"){ b.dataset.armed="1"; b.textContent="להסיר? לחצו שוב"; return; }
+    const [author,id]=b.dataset.rm.split("|"); b.disabled=true;
+    try{ const ref=db.doc("tips/"+author); const s=await ref.get(); const items=(s.data()?.items||[]).filter(x=>x.id!==id); await ref.set({items}); }catch(e){ b.disabled=false; }
+  });
+}
+$("#tipSearch").addEventListener("input",renderTips);
+$("#tipCatFilter").addEventListener("change",renderTips);
+$("#tipForm").addEventListener("submit",async e=>{
+  e.preventDefault(); await caps;
+  if(!db||!uid){ setStatus("#tipStatus","צריך להיות מחוברים.",true); return; }
+  const it={id:Math.random().toString(36).slice(2,10), place:$("#tPlace").value.trim(), city:$("#tCity").value.trim(), country:$("#tCountry").value.trim(), cat:$("#tCat").value, text:$("#tText").value.trim(), price:$("#tPrice").value.trim(), rate:Number($("#tRate").value), contact:$("#tContact").value.trim(), createdAt:new Date().toISOString()};
+  const file=$("#tPhoto")?.files?.[0];
+  if(!it.place||!it.city||!it.text){ setStatus("#tipStatus","מלאו מקום, עיר והמלצה.",true); return; }
+  $("#tipBtn").disabled=true;
+  try{
+    if(file && assets){ setStatus("#tipStatus","מעלה תמונה…"); try{ const up=await assets.upload(await shrinkImage(file)); it.photo={id:up.id,url:up.url}; }catch(er){ setStatus("#tipStatus","התמונה לא עלתה, ההמלצה תפורסם בלעדיה."); } }
+    const ref=db.doc("tips/"+uid); const s=await ref.get();
+    const items=[it,...((s.exists&&s.data().items)||[])].slice(0,200);
+    await ref.set({items}); e.target.reset(); $("#tCountry").value="ישראל"; setStatus("#tipStatus","ההמלצה פורסמה. תודה!");
+  }catch(err){ setStatus("#tipStatus","הפרסום לא הצליח.",true); }
+  finally{ $("#tipBtn").disabled=false; }
+});
+
+
+renderPlaceholder();
+initTrips(); initTips();
+})();
+</script>
