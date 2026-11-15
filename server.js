@@ -226,10 +226,13 @@ async function handleUpload(req, res) {
 }
 
 /* ---------- server ---------- */
-const server = http.createServer(async (req, res) => {
+let ready = null;
+function whenReady() { if (!ready) ready = store.init().then(pickModels).catch((e) => { ready = null; throw e; }); return ready; }
+async function handler(req, res) {
   const u = new URL(req.url, "http://localhost");
   const p = u.pathname;
   try {
+    if (p.startsWith("/api/") || p.startsWith("/blob/")) await whenReady();
     if (p === "/healthz") { res.writeHead(200, { "Content-Type": "text/plain" }); return res.end("ok"); }
     if (p === "/api/me" && req.method === "GET") return send(res, 200, { admin: isAdmin(req), ai: providers().map((x) => x.name) });
     if (p === "/api/sample" && req.method === "POST") return await handleSample(req, res);
@@ -248,7 +251,8 @@ const server = http.createServer(async (req, res) => {
     if (e.status !== 400 && e.status !== 413) console.error(e);
     send(res, e.status || 500, { code: e.status === 413 ? "too_large" : e.status === 400 ? "invalid_argument" : "unavailable" });
   }
-});
+}
+
 
 /* ---------- pick models automatically when not set ---------- */
 async function pickModels() {
@@ -274,6 +278,8 @@ async function pickModels() {
   }
 }
 
-store.init().then(pickModels).then(() => {
-  server.listen(PORT, () => console.log(`דרך צלחה on :${PORT} · AI: ${providers().map((x) => x.name + (x.name === "claude" ? " (" + CLAUDE_MODEL + ")" : " (" + GEMINI_MODEL + ")")).join(" → ") || "none"} · store: ${store.kind}`));
-}).catch((e) => { console.error("store init failed", e); process.exit(1); });
+module.exports = handler; // used by Vercel (api/index.js)
+
+if (require.main === module) whenReady().then(() => {
+  http.createServer(handler).listen(PORT, () => console.log(`דרך צלחה on :${PORT} · AI: ${providers().map((x) => x.name + (x.name === "claude" ? " (" + CLAUDE_MODEL + ")" : " (" + GEMINI_MODEL + ")")).join(" → ") || "none"} · store: ${store.kind}`));
+}).catch((e) => { console.error("startup failed", e); process.exit(1); });

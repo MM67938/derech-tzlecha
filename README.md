@@ -1,6 +1,6 @@
 # דרך צלחה – מדריך העלאה לאוויר
 
-האתר רץ על **Render** (חינם), שומר נתונים ב-**Neon** (חינם), ומתכנן טיולים עם **Claude** או **Gemini** (המפתח נשמר רק בשרת).
+האתר רץ על **Vercel** (חינם), שומר נתונים ב-**Neon** (חינם), ומתכנן טיולים עם **Claude** או **Gemini** (המפתח נשמר רק בשרת).
 
 ## מה צריך להכין (פעם אחת)
 
@@ -17,15 +17,12 @@
 3. פותחים את קובץ ה-ZIP במחשב, וגוררים **את כל מה שבתוך התיקייה** (לא את התיקייה עצמה) – כולל התיקיות `public` ו-`src`.
 4. לוחצים **Commit changes**.
 
-## שלב 2 – להקים את האתר ב-Render
+## שלב 2 – להקים את האתר ב-Vercel
 
-1. ב-render.com ← **New** ← **Web Service** ← מחברים את GitHub ובוחרים את `derech-tzlecha`.
-2. ממלאים:
-   - **Runtime:** Node
-   - **Build Command:** `npm install && npm run build`
-   - **Start Command:** `npm start`
-   - **Instance type:** Free
-3. ב-**Environment Variables** מוסיפים:
+1. נכנסים ל-vercel.com ← **Sign Up** ← **Continue with GitHub**.
+2. לוחצים **Add New…** ← **Project** ← ליד `derech-tzlecha` לוחצים **Import**.
+3. **Framework Preset:** Other. את שאר ההגדרות לא צריך לשנות (הן בקובץ `vercel.json`).
+4. פותחים **Environment Variables** ומוסיפים:
 
 | שם | ערך |
 |---|---|
@@ -33,9 +30,11 @@
 | `ANTHROPIC_API_KEY` | המפתח מ-Anthropic (אם יש) |
 | `AI_PROVIDER` | `auto` (או `claude` / `gemini`) |
 | `DATABASE_URL` | ה-Connection string מ-Neon |
-| `ADMIN_TOKEN` | סיסמה שתבחר, למשל מילה ארוכה עם מספרים |
+| `ADMIN_TOKEN` | סיסמה שתבחר |
 
-4. לוחצים **Create Web Service**. אחרי 2–3 דקות האתר עולה בכתובת כמו `https://derech-tzlecha.onrender.com`.
+5. לוחצים **Deploy**. אחרי דקה-שתיים האתר עולה בכתובת כמו `https://derech-tzlecha.vercel.app`.
+
+שינוי משתנה אחר כך: Project ← Settings ← Environment Variables ← שומרים ← Deployments ← שלוש נקודות ← **Redeploy**.
 
 ## בחירת מודל ה-AI
 
@@ -44,7 +43,7 @@
 - `AI_PROVIDER=claude` – קודם Claude, ו-Gemini כגיבוי.
 - המודל עצמו נבחר אוטומטית (הכי חדש מסוג Sonnet / Flash). אפשר לקבוע ידנית עם `CLAUDE_MODEL` או `GEMINI_MODEL`.
 
-כדי להחליף – משנים את המשתנה ב-Render ← Environment ← Save. האתר מתעדכן לבד.
+כדי להחליף – משנים את המשתנה ב-Vercel ועושים Redeploy.
 
 ## הגנה על החשבון
 
@@ -59,8 +58,7 @@
 
 ## טוב לדעת
 
-- **בתוכנית החינמית של Render** האתר "נרדם" אחרי 15 דקות בלי מבקרים, והכניסה הראשונה אחרי זה לוקחת כחצי דקה עד דקה. בתוכנית בתשלום זה לא קורה.
 - **טיולים שמורים** נשמרים לפי הדפדפן/מכשיר של המבקר (בלי הרשמה).
-- **בלי `DATABASE_URL`** האתר עובד, אבל השמירות נמחקות בכל עדכון – לכן חשוב לחבר את Neon.
-- **עדכונים:** כשמשנים את האפליקציה, מחליפים את הקובץ `src/app.html` ב-GitHub. Render בונה ומעלה את הגרסה החדשה לבד.
+- **בלי `DATABASE_URL`** שמירות והמלצות לא נשמרות לאורך זמן – לכן חשוב לחבר את Neon.
+- **עדכונים:** כשמשנים את האפליקציה, מחליפים את הקובץ `src/app.html` ב-GitHub. Vercel בונה ומעלה את הגרסה החדשה לבד.
 - **בדיקה שהאתר חי:** `https://הכתובת-שלך/healthz` מחזיר `ok`.

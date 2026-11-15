@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "functions": { "api/index.js": { "maxDuration": 300 } },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/blob/(.*)", "destination": "/api/index" },
+    { "source": "/healthz", "destination": "/api/index" }
+  ]
+}
