@@ -1,6 +1,6 @@
 # דרך צלחה – מדריך העלאה לאוויר
 
-האתר רץ על **Vercel** (חינם), שומר נתונים ב-**Neon** (חינם), ומתכנן טיולים עם **Claude** או **Gemini** (המפתח נשמר רק בשרת).
+האתר רץ על **Cloudflare** (חינם, הרשמה עם מייל בלבד), שומר נתונים ב-**Neon** (חינם), ומתכנן טיולים עם **Claude** או **Gemini** (המפתח נשמר רק בשרת).
 
 ## מה צריך להכין (פעם אחת)
 
@@ -17,24 +17,29 @@
 3. פותחים את קובץ ה-ZIP במחשב, וגוררים **את כל מה שבתוך התיקייה** (לא את התיקייה עצמה) – כולל התיקיות `public` ו-`src`.
 4. לוחצים **Commit changes**.
 
-## שלב 2 – להקים את האתר ב-Vercel
+## שלב 2 – להקים את האתר ב-Cloudflare (בלי SMS)
 
-1. נכנסים ל-vercel.com ← **Sign Up** ← **Continue with GitHub**.
-2. לוחצים **Add New…** ← **Project** ← ליד `derech-tzlecha` לוחצים **Import**.
-3. **Framework Preset:** Other. את שאר ההגדרות לא צריך לשנות (הן בקובץ `vercel.json`).
-4. פותחים **Environment Variables** ומוסיפים:
+1. נכנסים ל-dash.cloudflare.com ← **Sign up** עם מייל וסיסמה, ומאשרים את המייל שמגיע.
+2. בתפריט: **Workers & Pages** (או Compute ← Workers) ← **Create** ← **Import a repository**.
+3. מחברים את GitHub ובוחרים את `derech-tzlecha`.
+4. בהגדרות:
+   - **Project name:** `derech-tzlecha`
+   - **Build command:** להשאיר ריק
+   - **Deploy command:** `npx wrangler deploy`
+5. לוחצים **Create and deploy** ומחכים שיופיע ✓.
+6. נכנסים לפרויקט ← **Settings** ← **Variables and Secrets** ← **Add**, סוג **Secret**, ומוסיפים:
 
 | שם | ערך |
 |---|---|
 | `GEMINI_API_KEY` | המפתח מ-Google (אם יש) |
 | `ANTHROPIC_API_KEY` | המפתח מ-Anthropic (אם יש) |
-| `AI_PROVIDER` | `auto` (או `claude` / `gemini`) |
 | `DATABASE_URL` | ה-Connection string מ-Neon |
 | `ADMIN_TOKEN` | סיסמה שתבחר |
 
-5. לוחצים **Deploy**. אחרי דקה-שתיים האתר עולה בכתובת כמו `https://derech-tzlecha.vercel.app`.
+   ובסוף לוחצים **Deploy** / **Save**.
+7. הכתובת מופיעה בדף הפרויקט, למשל `https://derech-tzlecha.<השם-שלך>.workers.dev`. (בפעם הראשונה Cloudflare מבקש לבחור את `<השם-שלך>`.)
 
-שינוי משתנה אחר כך: Project ← Settings ← Environment Variables ← שומרים ← Deployments ← שלוש נקודות ← **Redeploy**.
+> הקבצים `server.js` ו-`store.js` משמשים להרצה על Render / Vercel / מחשב רגיל. ב-Cloudflare רץ הקובץ `worker.js`.
 
 ## בחירת מודל ה-AI
 
@@ -43,7 +48,7 @@
 - `AI_PROVIDER=claude` – קודם Claude, ו-Gemini כגיבוי.
 - המודל עצמו נבחר אוטומטית (הכי חדש מסוג Sonnet / Flash). אפשר לקבוע ידנית עם `CLAUDE_MODEL` או `GEMINI_MODEL`.
 
-כדי להחליף – משנים את המשתנה ב-Vercel ועושים Redeploy.
+כדי להחליף – משנים את המשתנה ב-Cloudflare ← Settings ← Variables and Secrets.
 
 ## הגנה על החשבון
 
@@ -60,5 +65,5 @@
 
 - **טיולים שמורים** נשמרים לפי הדפדפן/מכשיר של המבקר (בלי הרשמה).
 - **בלי `DATABASE_URL`** שמירות והמלצות לא נשמרות לאורך זמן – לכן חשוב לחבר את Neon.
-- **עדכונים:** כשמשנים את האפליקציה, מחליפים את הקובץ `src/app.html` ב-GitHub. Vercel בונה ומעלה את הגרסה החדשה לבד.
+- **עדכונים:** כשמשנים את האפליקציה, מחליפים את הקובץ `src/app.html` ב-GitHub. Cloudflare מעלה את הגרסה החדשה לבד (אחרי עדכון `src/app.html` מריצים `npm run build` כדי לעדכן את `public/index.html`, או מבקשים ממני קובץ מעודכן).
 - **בדיקה שהאתר חי:** `https://הכתובת-שלך/healthz` מחזיר `ok`.
