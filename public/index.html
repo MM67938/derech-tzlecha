@@ -1570,5 +1570,65 @@ initTrips(); initTips();
 })();
 </script>
 
+<!-- ===== מודעות המשתלם! (אתר מחובר) – במחשב: קופסה צפה בצד שמאל למטה; בטלפון: פס בתחתית. אפשר להקטין ===== -->
+<style>
+#hmAdsWrap{position:fixed;left:16px;bottom:16px;width:260px;z-index:25}
+#hmAds{height:320px;border-radius:16px;overflow:hidden;box-shadow:0 14px 34px -10px rgba(0,0,0,.4);background:#f5f3ff}
+#hmAdsWrap .hm-x{position:absolute;top:6px;right:6px;z-index:2;width:26px;height:26px;border-radius:50%;border:0;background:rgba(15,23,42,.65);color:#fff;font-size:15px;line-height:26px;cursor:pointer}
+#hmAdsPill{display:none;position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:25;border:0;border-radius:999px;padding:8px 14px;background:#7c3aed;color:#fff;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 8px 20px -6px rgba(124,58,237,.7)}
+body.hm-ads-min #hmAdsWrap{display:none} body.hm-ads-min #hmAdsPill{display:block}
+@media (max-width:900px){
+  #hmAdsWrap{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));width:auto}
+  #hmAds{height:120px}
+  body:not(.hm-ads-min){padding-bottom:140px}
+}
+</style>
+<div id="hmAdsWrap"><button class="hm-x" type="button" aria-label="הקטנת המודעות">×</button><div id="hmAds" data-hamishtalem-ads></div></div>
+<button id="hmAdsPill" type="button">📢 מודעות</button>
+<script>(function(){var B=document.body;try{if(sessionStorage.getItem("hmAdsMin"))B.classList.add("hm-ads-min")}catch(e){}
+document.querySelector("#hmAdsWrap .hm-x").onclick=function(){B.classList.add("hm-ads-min");try{sessionStorage.setItem("hmAdsMin","1")}catch(e){}};
+document.getElementById("hmAdsPill").onclick=function(){B.classList.remove("hm-ads-min");try{sessionStorage.removeItem("hmAdsMin")}catch(e){}};})();</script>
+<script src="https://hamishtalem.onrender.com/embed.js" data-key="pk_afd32af34d91e469504b42768c83fab0"></script>
+<!-- ===== גישה למנויי המשתלם! בלבד: נכנסים עם הקוד האישי (4 ספרות + אות). שימוש ראשון = התחייבות לשנה במשתלם. אם שרת המשתלם לא זמין – לא חוסמים ===== -->
+<script>(function(){
+  var KEY="pk_afd32af34d91e469504b42768c83fab0", BASE="https://hamishtalem.onrender.com";
+  try{ if(localStorage.getItem("dz_admin")) return; }catch(e){}
+  var c=null; try{ c=JSON.parse(localStorage.getItem("hm_member")||"null"); }catch(e){}
+  if(c&&c.until>Date.now()) return; // נבדק ב-24 השעות האחרונות
+  var box=document.createElement("div"); box.dir="rtl";
+  box.style.cssText="position:fixed;inset:0;z-index:2147483000;background:rgba(10,40,38,.86);display:grid;place-items:center;padding:16px;font-family:system-ui,Arial,sans-serif";
+  var card='<div style="background:#fff;color:#0f2e2b;border-radius:22px;max-width:400px;width:100%;padding:24px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4)">';
+  function show(html){ box.innerHTML=card+html+'</div>'; if(!box.parentNode) document.body.appendChild(box); }
+  function form(msg,err){
+    show('<div style="font-size:36px">🧭</div><h2 style="margin:6px 0 4px;font-size:22px">דרך צלחה – למנויי המשתלם!</h2>'+
+      '<p style="margin:0 0 14px;color:#475569;line-height:1.6">'+(msg||'הכניסה בחינם לכל מנוי של המשתלם. הקלידו את <b>הקוד האישי</b> שלכם (4 ספרות + אות, למשל 0757ק) – הוא מופיע באזור האישי באתר המשתלם.')+'</p>'+
+      '<input id="hmCode" inputmode="text" autocomplete="off" placeholder="0757ק" style="width:100%;box-sizing:border-box;font-size:22px;text-align:center;letter-spacing:3px;padding:12px;border:2px solid #cbd5e1;border-radius:14px;margin-bottom:8px">'+
+      (err?'<div style="color:#b91c1c;font-weight:700;margin-bottom:8px">'+err+'</div>':'')+
+      '<button id="hmGo" style="width:100%;border:0;border-radius:999px;padding:13px;font-size:17px;font-weight:800;background:#0d7a6f;color:#fff;cursor:pointer">כניסה</button>'+
+      '<a href="'+BASE+'/?join=1" target="_blank" rel="noopener" style="display:block;margin-top:12px;color:#7c3aed;font-weight:800;text-decoration:none">עוד לא מנויים? הרשמה חינם למשתלם ←</a>'+
+      '<div style="margin-top:10px;font-size:12px;color:#64748b">הגישה מחייבת להישאר מנויים במשתלם לפחות שנה.</div>');
+    var i=box.querySelector("#hmCode"); i.focus();
+    i.onkeydown=function(e){ if(e.key==="Enter") go(); }; box.querySelector("#hmGo").onclick=go;
+  }
+  function go(){
+    var code=(box.querySelector("#hmCode").value||"").trim(); if(code.length<5) return form(null,"הקלידו את הקוד המלא – 4 ספרות ואות");
+    show('<div style="font-size:34px">⏳</div><h3>בודקים את המנוי…</h3><p style="color:#64748b">בפעם הראשונה זה יכול לקחת עד דקה</p>');
+    var ctl=new AbortController(), t=setTimeout(function(){ctl.abort()},70000);
+    fetch(BASE+"/api/partner/verify?key="+KEY+"&code="+encodeURIComponent(code),{signal:ctl.signal}).then(function(r){return r.json()}).then(function(j){
+      clearTimeout(t);
+      if(j&&j.allowed){ try{ localStorage.setItem("hm_member",JSON.stringify({code:code,until:Date.now()+864e5})); }catch(e){}
+        if(j.first_time){ show('<div style="font-size:36px">🎉</div><h2 style="margin:6px 0">ברוכים הבאים'+(j.name?', '+j.name:'')+'!</h2><p style="color:#475569;line-height:1.6">דרך צלחה כלול במנוי <b>המשתלם!</b> שלכם.<br>הגישה מחייבת להישאר מנויים במשתלם לפחות שנה.</p><button id="hmOk" style="width:100%;border:0;border-radius:999px;padding:13px;font-size:17px;font-weight:800;background:#0d7a6f;color:#fff;cursor:pointer">מתחילים לתכנן</button>');
+          box.querySelector("#hmOk").onclick=function(){ box.remove(); }; }
+        else box.remove(); }
+      else form(null,(j&&j.message)||"הקוד לא נמצא");
+    }).catch(function(){ clearTimeout(t); box.remove(); }); // אין חיבור לשרת המשתלם – לא חוסמים
+  }
+  // קוד שנשמר – בודקים שוב בשקט (המנוי עדיין פעיל?)
+  if(c&&c.code){ fetch(BASE+"/api/partner/verify?key="+KEY+"&code="+encodeURIComponent(c.code)).then(function(r){return r.json()}).then(function(j){
+      if(j&&j.allowed){ try{ localStorage.setItem("hm_member",JSON.stringify({code:c.code,until:Date.now()+864e5})); }catch(e){} }
+      else { try{ localStorage.removeItem("hm_member"); }catch(e){} form(null,(j&&j.message)||"המנוי במשתלם אינו פעיל"); } }).catch(function(){}); return; }
+  if(document.body) form(); else document.addEventListener("DOMContentLoaded",function(){ form(); });
+})();</script>
+
 </body>
 </html>
