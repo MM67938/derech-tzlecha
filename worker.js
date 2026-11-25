@@ -35,11 +35,17 @@ const ipOf = (req) => req.headers.get("cf-connecting-ip") || (req.headers.get("x
 const isAdmin = (req, env) => !!env.ADMIN_TOKEN && req.headers.get("x-admin") === env.ADMIN_TOKEN;
 
 /* ---------- Neon over HTTPS ---------- */
+function dbUrl(env) {
+  // accept the string as copied from Neon, even with "psql", quotes or spaces around it
+  let u = String(env.DATABASE_URL || "").trim().replace(/^psql\s+/i, "").replace(/^['"]|['"]$/g, "").trim();
+  return /^postgres(ql)?:\/\//i.test(u) ? u : "";
+}
 async function sql(env, query, params = []) {
-  const url = new URL(env.DATABASE_URL.replace(/^postgres(ql)?:/, "https:"));
+  const conn = dbUrl(env);
+  const url = new URL(conn.replace(/^postgres(ql)?:/i, "https:"));
   const r = await fetch("https://" + url.hostname + "/sql", {
     method: "POST",
-    headers: { "content-type": "application/json", "Neon-Connection-String": env.DATABASE_URL, "Neon-Raw-Text-Output": "true", "Neon-Array-Mode": "false" },
+    headers: { "content-type": "application/json", "Neon-Connection-String": conn, "Neon-Raw-Text-Output": "true", "Neon-Array-Mode": "false" },
     body: JSON.stringify({ query, params })
   });
   if (!r.ok) throw new Error("db " + r.status + " " + (await r.text()).slice(0, 200));
@@ -48,7 +54,7 @@ async function sql(env, query, params = []) {
 }
 let dbReady = null;
 function initDb(env) {
-  if (!env.DATABASE_URL) return Promise.resolve();
+  if (!dbUrl(env)) return Promise.resolve();
   if (!dbReady) dbReady = (async () => {
     await sql(env, "create table if not exists docs(path text primary key, coll text not null, id text not null, data jsonb not null, updated_at timestamptz default now())");
     await sql(env, "create index if not exists docs_coll on docs(coll)");
@@ -59,20 +65,20 @@ function initDb(env) {
 const mem = { docs: new Map(), blobs: new Map() }; // fallback when no DATABASE_URL (not durable)
 const parseData = (v) => (typeof v === "string" ? JSON.parse(v) : v);
 const store = {
-  async get(env, p) { if (!env.DATABASE_URL) return mem.docs.get(p) || null; const r = await sql(env, "select data from docs where path=$1", [p]); return r[0] ? parseData(r[0].data) : null; },
+  async get(env, p) { if (!dbUrl(env)) return mem.docs.get(p) || null; const r = await sql(env, "select data from docs where path=$1", [p]); return r[0] ? parseData(r[0].data) : null; },
   async set(env, p, data) {
     const seg = p.split("/"); const id = seg.pop(); const coll = seg.join("/");
-    if (!env.DATABASE_URL) { mem.docs.set(p, data); return; }
+    if (!dbUrl(env)) { mem.docs.set(p, data); return; }
     await sql(env, "insert into docs(path,coll,id,data,updated_at) values($1,$2,$3,$4::jsonb,now()) on conflict(path) do update set data=excluded.data, updated_at=now()", [p, coll, id, JSON.stringify(data)]);
   },
-  async del(env, p) { if (!env.DATABASE_URL) { mem.docs.delete(p); return; } await sql(env, "delete from docs where path=$1", [p]); },
+  async del(env, p) { if (!dbUrl(env)) { mem.docs.delete(p); return; } await sql(env, "delete from docs where path=$1", [p]); },
   async list(env, coll) {
-    if (!env.DATABASE_URL) return [...mem.docs].filter(([k]) => k.slice(0, k.lastIndexOf("/")) === coll).map(([k, v]) => ({ id: k.slice(k.lastIndexOf("/") + 1), data: v }));
+    if (!dbUrl(env)) return [...mem.docs].filter(([k]) => k.slice(0, k.lastIndexOf("/")) === coll).map(([k, v]) => ({ id: k.slice(k.lastIndexOf("/") + 1), data: v }));
     const r = await sql(env, "select id, data from docs where coll=$1", [coll]);
     return r.map((x) => ({ id: x.id, data: parseData(x.data) }));
   },
-  async putBlob(env, id, type, b64) { if (!env.DATABASE_URL) { mem.blobs.set(id, { type, b64 }); return; } await sql(env, "insert into blobs_b64(id,type,b64) values($1,$2,$3)", [id, type, b64]); },
-  async getBlob(env, id) { if (!env.DATABASE_URL) return mem.blobs.get(id) || null; const r = await sql(env, "select type, b64 from blobs_b64 where id=$1", [id]); return r[0] || null; }
+  async putBlob(env, id, type, b64) { if (!dbUrl(env)) { mem.blobs.set(id, { type, b64 }); return; } await sql(env, "insert into blobs_b64(id,type,b64) values($1,$2,$3)", [id, type, b64]); },
+  async getBlob(env, id) { if (!dbUrl(env)) return mem.blobs.get(id) || null; const r = await sql(env, "select type, b64 from blobs_b64 where id=$1", [id]); return r[0] || null; }
 };
 
 /* ---------- AI ---------- */
@@ -89,6 +95,7 @@ async function pickModels(env) {
     m.claude = m.claude || "claude-sonnet-4-5";
   }
   if (env.GEMINI_API_KEY && !m.gemini) {
+    // newest stable Flash first; the backups below are tried when it is busy
     try {
       const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200", { headers: { "x-goog-api-key": env.GEMINI_API_KEY } });
       const ok = ((await r.json()).models || []).filter((x) => (x.supportedGenerationMethods || []).includes("generateContent")).map((x) => x.name.replace(/^models\//, "")).filter((n) => /^gemini-\d+(\.\d+)?-flash$/.test(n));
@@ -97,6 +104,9 @@ async function pickModels(env) {
     } catch (e) { console.log("models gemini", e.message); }
     m.gemini = m.gemini || "gemini-2.5-flash";
   }
+  const list = String(m.gemini || "").split(",").map((x) => x.trim()).filter(Boolean);
+  for (const b of ["gemini-2.5-flash", "gemini-2.5-flash-lite"]) if (!list.includes(b)) list.push(b);
+  m.geminiList = list;
   return (models = m);
 }
 function providers(env) {
@@ -111,7 +121,7 @@ async function* sseData(body) {
     let i; while ((i = buf.indexOf("\n")) >= 0) { const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (line.startsWith("data:")) yield line.slice(5).trim(); }
   }
 }
-async function openStream(name, env, m, messages, wantJson) {
+async function openStream(name, env, m, messages, wantJson, geminiModel) {
   if (name === "claude") {
     const system = "You plan family trips. Follow the user's instructions exactly." + (wantJson ? " Reply with one JSON value only, with no markdown fences and no text before or after it." : "");
     const r = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "content-type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" }, body: JSON.stringify({ model: m.claude, max_tokens: 20000, stream: true, system, messages }) });
@@ -124,7 +134,7 @@ async function openStream(name, env, m, messages, wantJson) {
   }
   const contents = messages.map((x) => ({ role: x.role === "assistant" ? "model" : "user", parts: [{ text: x.content }] }));
   const generationConfig = { maxOutputTokens: 30000, temperature: 0.7 }; if (wantJson) generationConfig.responseMimeType = "application/json";
-  const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(m.gemini) + ":streamGenerateContent?alt=sse", { method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY }, body: JSON.stringify({ contents, generationConfig }) });
+  const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(geminiModel || m.gemini) + ":streamGenerateContent?alt=sse", { method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY }, body: JSON.stringify({ contents, generationConfig }) });
   if (!r.ok) throw Object.assign(new Error("gemini " + r.status + " " + (await r.text()).slice(0, 200)), { status: r.status });
   return (async function* () {
     for await (const d of sseData(r.body)) { let ev; try { ev = JSON.parse(d); } catch { continue; }
@@ -145,11 +155,23 @@ async function handleSample(req, env, ctx) {
   const m = await pickModels(env);
   // open the first provider that answers; fall back to the next one if it fails before streaming
   let iter = null, first = null, lastErr = null;
+  const attempts = [];
   for (const name of list) {
-    try { const it = await openStream(name, env, m, messages, !!body.json); const f = await it.next(); if (f.done) { lastErr = new Error("empty"); continue; } iter = it; first = f.value; break; }
-    catch (e) { lastErr = e; console.log("[ai]", name, e.message); }
+    if (name === "gemini") for (const gm of m.geminiList) attempts.push(["gemini", gm]);
+    else attempts.push([name, null]);
   }
-  if (!iter) return json({ code: lastErr && lastErr.status === 429 ? "rate_limited" : "upstream_error" }, lastErr && lastErr.status === 429 ? 429 : 502);
+  outer: for (const [name, gm] of attempts) {
+    for (let tryNo = 0; tryNo < 2; tryNo++) {
+      try { const it = await openStream(name, env, m, messages, !!body.json, gm); const f = await it.next(); if (f.done) { lastErr = new Error("empty"); break; } iter = it; first = f.value; break outer; }
+      catch (e) {
+        lastErr = e; console.log("[ai]", name, gm || "", e.message);
+        const busy = [429, 500, 503, 504].includes(e.status);
+        if (!busy) break;                       // e.g. bad key – no point retrying this model
+        if (tryNo === 0) await new Promise((r) => setTimeout(r, 1500));
+      }
+    }
+  }
+  if (!iter) return json({ code: lastErr && lastErr.status === 429 ? "rate_limited" : "upstream_error", detail: String(lastErr && lastErr.message || "").replace(/AIza[\w-]+/g, "***").slice(0, 400) }, lastErr && lastErr.status === 429 ? 429 : 502);
   const { readable, writable } = new TransformStream();
   const w = writable.getWriter(); const enc = new TextEncoder();
   ctx.waitUntil((async () => {
