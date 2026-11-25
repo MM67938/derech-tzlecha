@@ -94,19 +94,21 @@ async function pickModels(env) {
     } catch (e) { console.log("models claude", e.message); }
     m.claude = m.claude || "claude-sonnet-4-5";
   }
-  if (env.GEMINI_API_KEY && !m.gemini) {
-    // newest stable Flash first; the backups below are tried when it is busy
+  if (env.GEMINI_API_KEY) {
+    // all stable Flash models this key can use, newest first, then the lighter Flash-Lite ones as backups
+    let flash = [], lite = [];
     try {
       const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200", { headers: { "x-goog-api-key": env.GEMINI_API_KEY } });
-      const ok = ((await r.json()).models || []).filter((x) => (x.supportedGenerationMethods || []).includes("generateContent")).map((x) => x.name.replace(/^models\//, "")).filter((n) => /^gemini-\d+(\.\d+)?-flash$/.test(n));
-      ok.sort((a, b) => parseFloat(b.slice(7)) - parseFloat(a.slice(7)));
-      m.gemini = ok[0] || "";
+      const names = ((await r.json()).models || []).filter((x) => (x.supportedGenerationMethods || []).includes("generateContent")).map((x) => x.name.replace(/^models\//, ""));
+      const ver = (n) => parseFloat(n.slice(7));
+      flash = names.filter((n) => /^gemini-\d+(\.\d+)?-flash$/.test(n)).sort((a, b) => ver(b) - ver(a));
+      lite = names.filter((n) => /^gemini-\d+(\.\d+)?-flash-lite$/.test(n)).sort((a, b) => ver(b) - ver(a));
     } catch (e) { console.log("models gemini", e.message); }
-    m.gemini = m.gemini || "gemini-2.5-flash";
+    const chosen = String(m.gemini || "").split(",").map((x) => x.trim()).filter(Boolean);
+    const list = [...chosen, ...flash.slice(0, 3), ...lite.slice(0, 2)].filter((x, i, a) => a.indexOf(x) === i);
+    m.geminiList = list.length ? list : ["gemini-2.5-flash"];
+    m.gemini = m.geminiList[0];
   }
-  const list = String(m.gemini || "").split(",").map((x) => x.trim()).filter(Boolean);
-  for (const b of ["gemini-2.5-flash", "gemini-2.5-flash-lite"]) if (!list.includes(b)) list.push(b);
-  m.geminiList = list;
   return (models = m);
 }
 function providers(env) {
@@ -161,13 +163,13 @@ async function handleSample(req, env, ctx) {
     else attempts.push([name, null]);
   }
   outer: for (const [name, gm] of attempts) {
-    for (let tryNo = 0; tryNo < 2; tryNo++) {
+    for (let tryNo = 0; tryNo < 3; tryNo++) {
       try { const it = await openStream(name, env, m, messages, !!body.json, gm); const f = await it.next(); if (f.done) { lastErr = new Error("empty"); break; } iter = it; first = f.value; break outer; }
       catch (e) {
         lastErr = e; console.log("[ai]", name, gm || "", e.message);
         const busy = [429, 500, 503, 504].includes(e.status);
         if (!busy) break;                       // e.g. bad key – no point retrying this model
-        if (tryNo === 0) await new Promise((r) => setTimeout(r, 1500));
+        if (tryNo < 2) await new Promise((r) => setTimeout(r, 1500 * (tryNo + 1)));
       }
     }
   }
